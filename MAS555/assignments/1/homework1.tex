@@ -1,0 +1,168 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{stackrel}
+
+\title{Homework 1}
+\subject{MAS555 Advanced Statistics}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\newcommand{\wrapwithdelimiter}[4]{
+    \ifx#1\big%
+        \ensuremath{\bigl#3 #2 \bigr#4}%
+    \else\ifx#1\Big%
+        \ensuremath{\Bigl#3 #2 \Bigr#4}%
+    \else\ifx#1\bigg%
+        \ensuremath{\biggl#3 #2 \biggr#4}%
+    \else\ifx#1\Bigg%
+        \ensuremath{\Biggl#3 #2 \Biggr#4}%
+    \else%
+        \ensuremath{\left#3 #2 \right#4}%
+    \fi\fi\fi\fi
+}
+\newcommand{\paren}[2][]{\wrapwithdelimiter{#1}{#2}()}
+\newcommand{\set}[2][]{\wrapwithdelimiter{#1}{#2}\{\}}
+\newcommand{\bracket}[2][]{\wrapwithdelimiter{#1}{#2}[]}
+\newcommand{\decto}{\ensuremath{\mkern1mu\mathrel{\downarrow}\mkern1mu}}
+\newcommand{\incto}{\ensuremath{\mkern1mu\mathrel{\uparrow}\mkern1mu}}
+\newcommand{\eqlh}{\ensuremath{\stackrel[\textrm{L'H}]{}{=\joinrel=}}}
+\def\P{P\expandafter\paren}
+\newcommand{\E}{\ensuremath{\mathrm{E}}}
+\newcommand{\Var}{\ensuremath{\operatorname{Var}}}
+\newcommand{\Cov}{\ensuremath{\operatorname{Cov}}}
+
+
+\begin{document}
+\maketitle
+
+\solution[1.45] {
+    \vspace*{-1.3em}
+    \begin{enumerate}[label={(\arabic*)}, topsep=0pt]
+        \item Nonnegativity:
+              $\P{X=x_i} = \P{\set{ s_j\in S : X(s_j) = x_i }} \ge 0$;
+        \item total probability:
+              \begin{align*}
+                  \P{X \in \mathcal X} & = \sum_{x_i \in \mathcal X} \P{X = x_i}
+                  \\ &= \sum_{x_i \in \mathcal X} \P{\set{ s_j\in S : X(s_j) = x_i }}
+                  \\ &= \P{\bigcup_{x_i \in \mathcal X} \set{ s_j\in S : X(s_j) = x_i }}
+                  \\ &= \P{\set{ s_j\in S : X(s_j) \in \mathcal X }} = 1;
+              \end{align*}
+        \item countable additivity: if $A_i \subseteq \mathcal X$  are pairwise disjoint,
+              \begin{align*}
+                  \P[\bigg]{X \in \bigcup_{i \ge A_i} A_i} & = \P[\bigg]{\set[\bigg]{ s\in S : X(s) \in \bigcup_{i\ge 1} A_i }}
+                  \\ &= \P[\bigg]{\,\bigcup_{i\ge 1} \set{ s\in S : X(s) \in A_i }}
+                  \\ &= \sum_{i\ge 1} \P{\set{ s\in S : X(s) \in A_i }}
+                  \\ &= \sum_{i\ge 1} \P{X \in A_i}.
+              \end{align*}
+    \end{enumerate}
+}
+
+\solution[2.10] {%
+\vspace*{-1.3em}
+    \begin{enumerate}[label={(\alph*)}, topsep=0pt]
+        \item Let $F_X$ has a jump at $x_0$, $y_0 = F_X(x_0)$. Let $x_1$ be the right next to $x_0$, that is, $\lim_{x\to x_1-} F_X(x) = F_X(x_0) < F_X(x_1)$. Now assume $y = y_0 + \epsilon$ for some $0\le\epsilon < F_X(x_1) - F_X(x_0)$. Then $\P{X < x_1} = \lim_{x\to x_1-} F_X(x) = \P{X\le x_0}$ so that
+        \begin{align*}
+            \P{Y \le y} &= \P{Y \le y_0}
+            \\ &= \P{X < x_1} = \P{X\le x_0} = F_X(x_0) = y_0 \le y
+        \end{align*}
+        and the inequality becomes strict whenever $\epsilon$ is nonzero.
+        \item Since $F_Y(y) = 1 - P(Y > y)$, the result is analogous to (a). 
+    \end{enumerate}
+}
+
+\solution[2.38] {%
+\vspace*{-1.3em}
+    \begin{enumerate}[label={(\alph*)}, topsep=0pt]
+        \item
+        \begin{align*}
+            M_X(t) &= \E e^{tX} = \sum_{x=0}^\infty e^{tx}\,\binom {r+x-1} x \, p^r (1 - p)^x
+            \\ &= \sum_{x=0}^\infty \binom {r+x-1} x \, p^r \paren[\big]{(1 - p) e^t}^x
+            \\ &= \frac{p^r}{\paren[\big]{1 - (1 - p) e^t}^r} \, \uwave{\sum_{x=0}^\infty \binom {r+x-1} x \, \paren[\big]{1 - (1 - p) e^t}^r \, \paren[\big]{(1 - p) e^t}^x}_{=1}
+            \\ &= \frac{p^r}{\paren[\big]{1 - (1 - p) e^t}^r}.
+        \end{align*}
+        \item
+        \begin{align*}
+            \lim_{p\decto 0} M_Y(t) &= \lim_{p\decto 0} \E e^{2ptX}
+            \\ &= \paren{\lim_{p\decto 0} \frac{p}{1 - (1 - p) e^{2pt}}}^r 
+            \\ &\hphantom{\,=\,}\mathllap{\eqlh} \paren{\lim_{p\decto 0} \frac{1}{e^{2pt} - 2t(1-p)e^{2pt}}}^r = \paren{\frac{1}{1 - 2t}}^r,\qquad |t|<1/2.
+        \end{align*}
+    \end{enumerate}
+}
+
+\solution[3.20] {%
+\vspace*{-1.3em}
+    \begin{enumerate}[label={(\alph*)}, topsep=0pt]
+        \item
+        \begin{align*}
+            \E X &= \int_0^\infty x\,f(x)\,dx
+            \\ &= \frac{2}{\sqrt{2\pi}}\int_0^\infty x\,e^{-x^2/2}\,dx 
+            \\ &= \frac{2}{\sqrt{2\pi}} \int_{-\infty}^0 e^u\,du \qquad(u = -x^2/2)
+            \\ &= \frac{2}{\sqrt{2\pi}},
+            \\ \Var X &= \int_0^\infty x^2\,f(x)\,dx - (\E X)^2 
+            \\ &= \frac{2}{\sqrt{2\pi}}\int_0^\infty x^2\,e^{-x^2/2}\,dx - \frac 2 \pi
+            \\ &= \frac{2}{\sqrt{2\pi}} \paren{ \left.{ -x\,e^{-x^2/2} }\right|_0^\infty + \int_0^\infty e^{-x^2/2}\,dx } - \frac 2 \pi
+            \\ &= 1 - \frac 2 \pi.
+        \end{align*}
+        \item Assume $g$ to be strictly increasing on $[0,\infty)$ and both $g$ and $g^{-1}$ to be smooth. Then we have
+        \begin{align*}
+            f_Y(y) &= \frac{d}{dy}\,\P{Y\le y} = \frac{d}{dy}\,\P{X\le g^{-1}(y)}
+            \\ &= \frac{d}{dy}\,F_X(g^{-1}(y)) = \frac{f_X(g^{-1}(y))}{g'(g^{-1}(y))}.
+        \end{align*}
+        When $g(x) = x^2$ ($x\ge 0$), we have 
+        \begin{align*}
+            f_Y(y) = \frac{f_X(\sqrt y)} {2\sqrt{y}} = \frac{1}{\sqrt{2\pi y}} \, e^{-y/2},\qquad Y\sim\mathrm{gamma}(1/2,\,2).
+        \end{align*}
+    \end{enumerate}
+}
+
+\solution[4.32] {%
+\vspace*{-1.3em}
+    \begin{enumerate}[label={(\alph*)}, topsep=0pt]
+        \item $\bullet$ Marginal pdf:
+        \begin{align*}
+            f_Y(y) &= \int_0^\infty f_{Y|\Lambda}(y|\lambda) f_\Lambda(\lambda)\,d\lambda
+            \\ &= \frac{1}{y!\,\Gamma(\alpha)\,\beta^\alpha}\int_0^\infty \lambda ^y e^{-\lambda} \cdot \lambda^{\alpha - 1} e^{-\lambda/\beta}\,d\lambda
+            \\ &= \frac{\Gamma(y + \alpha)\,(\beta')^{y+\alpha}}{y!\,\Gamma(\alpha)\,\beta^\alpha}\,\uwave{\frac{1}{\Gamma(y + \alpha)\,(\beta')^{y+\alpha}}\int_0^\infty \lambda^{y + \alpha - 1} e^{-\lambda/\beta'}\,d\lambda}_{=1}\tag{$\beta' \coloneqq \beta/(\beta + 1)$}
+            \\ &= \frac{\Gamma(y + \alpha)\,\beta^{y}}{y!\,\Gamma(\alpha)\,(\beta+1)^{y+\alpha}}
+            \\ &= \frac{\Gamma(y + \alpha)}{y!\,\Gamma(\alpha)}\,\paren{1\over\beta+1}^{\alpha}\paren{\beta\over\beta+1}^{y}
+        \end{align*}
+        When $\alpha$ is a positive integer, $Y \sim \operatorname{NB}(\alpha, (\beta+1)^{-1}).$
+
+        $\bullet$ Mean: $\E Y = \E\bracket{\E\paren{Y|\Lambda}} = \E\Lambda = \alpha\beta.$
+
+        $\bullet$ Variance: By Theorem 4.4.7 (Conditional variance identity, or the law of total variance),
+        \begin{align*}
+            \Var Y &= \E\bracket{\Var(Y|\Lambda)} + \Var\bracket{E(Y|\Lambda)} = \E\Lambda + \Var\Lambda = \alpha\beta + \alpha\beta^2.
+        \end{align*}
+        
+    \end{enumerate}
+}
+
+\solution[4.58] {%
+\vspace*{-1.3em}
+    \begin{enumerate}[label={(\alph*)}, topsep=0pt]
+        \item \begin{align*}
+            \Cov(X, \E(Y|X)) &= \E\bracket{X\cdot\E(Y|X)} - \E X\cdot\E\bracket{\E(Y|X)}
+            \\ &= \E\bracket{\E(XY|X)} - \E X\cdot\E\bracket{\E(Y|X)}
+            \\ &= \E(XY) - \E X\cdot \E Y = \Cov(X, Y).
+        \end{align*}
+        \item Since $\Cov$ is bilinear, by (a), $\Cov(X, Y - \E(Y|X)) = \Cov(X, Y) - \Cov(X, \E(Y|X)) = 0.$
+        \item $\Var\bracket{Y - \E(Y|X)} = \Var Y + \Var\bracket{ \E(Y|X) } - 2\Cov(Y, \E(Y|X))$, where
+        $$\E\bracket{Y\,\E(Y|X)} = \E\paren[\big]{\E\bracket{Y\,\E(Y|X)\,|\,X}} = \E\bracket{\E(Y|X)^2}$$ so that
+        \begin{align*}
+            \Cov(Y, \E(Y|X)) &= \E\bracket{Y\,\E(Y|X)} - \E Y\cdot \E\bracket{\E(Y|X)} = \Var\bracket{\E(Y|X)},
+        \end{align*}
+        and $\Var Y = \E\bracket{\Var(Y|X)} + \Var\bracket{E(Y|X)}$. Thus
+        $$ \Var\bracket{Y - \E(Y|X)} = \Var Y - \Var\bracket{\E(Y|X)} = \E\bracket{\Var(Y|X)}. $$
+    \end{enumerate}
+}
+
+\end{document}
