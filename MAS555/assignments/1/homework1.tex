@@ -9,36 +9,14 @@
 \usepackage{ulem}
 \usepackage{stackrel}
 
+\usepackage{macros-common}
+\usepackage{macros-prob}
+
 \title{Homework 1}
 \subject{MAS555 Advanced Statistics}
 \studentid{20170058}
 \name{Keonwoo Kim}
 \date{\today}
-
-\newcommand{\wrapwithdelimiter}[4]{
-    \ifx#1\big%
-        \ensuremath{\bigl#3 #2 \bigr#4}%
-    \else\ifx#1\Big%
-        \ensuremath{\Bigl#3 #2 \Bigr#4}%
-    \else\ifx#1\bigg%
-        \ensuremath{\biggl#3 #2 \biggr#4}%
-    \else\ifx#1\Bigg%
-        \ensuremath{\Biggl#3 #2 \Biggr#4}%
-    \else%
-        \ensuremath{\left#3 #2 \right#4}%
-    \fi\fi\fi\fi
-}
-\newcommand{\paren}[2][]{\wrapwithdelimiter{#1}{#2}()}
-\newcommand{\set}[2][]{\wrapwithdelimiter{#1}{#2}\{\}}
-\newcommand{\bracket}[2][]{\wrapwithdelimiter{#1}{#2}[]}
-\newcommand{\decto}{\ensuremath{\mkern1mu\mathrel{\downarrow}\mkern1mu}}
-\newcommand{\incto}{\ensuremath{\mkern1mu\mathrel{\uparrow}\mkern1mu}}
-\newcommand{\eqlh}{\ensuremath{\stackrel[\textrm{L'H}]{}{=\joinrel=}}}
-\def\P{P\expandafter\paren}
-\newcommand{\E}{\ensuremath{\mathrm{E}}}
-\newcommand{\Var}{\ensuremath{\operatorname{Var}}}
-\newcommand{\Cov}{\ensuremath{\operatorname{Cov}}}
-
 
 \begin{document}
 \maketitle
