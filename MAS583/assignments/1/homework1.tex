@@ -14,7 +14,7 @@
 \usepackage[bb]{macros-prob}
 
 \title{Homework 1}
-\subject{MAS583 Random Matrix Theory and Its Application}
+\subject{MAS583(A) Random Matrix Theory and Its Application}
 \studentid{20170058}
 \name{Keonwoo Kim}
 \date{\today}
@@ -47,7 +47,7 @@ Like a way we defined a graph for each $\mathbf i \in \{1,\dots,N\}^k$, we may a
 \noindent Let $\mathbf i = (i_1,\dots,i_k),\mathbf i' = (i'_1,\dots,i'_k) \in \{1,\dots,N\}^k$. Define the graph $G_{\mathbf i} = (V_{\mathbf i},E_{\mathbf i})$ associated with $\mathbf i$ where $V_{\mathbf i} = \{ i_j : j\in\{1,\dots,k\} \}$ and $E_{\mathbf i} =  \{ \{i_j,i_{j+1}\} : j\in \{1,\dots,k\} \}$ with $i_{k+1}\coloneqq i_1$. Also, define the graph $G_{\mathbf i,\mathbf i'} = (V_{\mathbf i, \mathbf i'}, E_{\mathbf i, \mathbf i'})$ associated with $\{\mathbf i,\mathbf i'\}$ where $V_{\mathbf i, \mathbf  i'} = V_{\mathbf i}\cup V_{\mathbf i'}$ and
 $ E_{\mathbf i,\mathbf i'} = E_{\mathbf i} \cup E_{\mathbf i'}.$
 
-Traversing the graph $G_{\mathbf i}$ or $G_{\mathbf i,\mathbf i'}$, let $N_{\mathbf i}$ or $N_{\mathbf i,\mathbf i'}(e)$ ($e\in E_{\mathbf i}$ or $e\in E_{\mathbf i,\mathbf i'}$) be the number of times the traverse passes $e$ (in any direction), respectively.
+Traversing the graph $G_{\mathbf i}$ ($i_1\to \cdots \to i_k \to i_1$) or $G_{\mathbf i,\mathbf i'}$ ($i_1\to \cdots \to i_k \to i_1$ and $i'_1\to \cdots \to i'_k \to i'_1$), let $N_{\mathbf i}$ or $N_{\mathbf i,\mathbf i'}(e)$ ($e\in E_{\mathbf i}$ or $e\in E_{\mathbf i,\mathbf i'}$) be the number of times the traverse passes $e$ (in any direction), respectively.
 
 \setlength{\leftskip}{0cm}
 With these definitions, we obtain
@@ -86,7 +86,9 @@ Using this observation, we have (when $N\ge 2k$)
         \prod_{\substack{e\in E_{\mathbf i'} \\ \text{$e$ is a loop}}}\mkern-10mu \E\bracket{ \hat H_{11}^{N_{\mathbf i} (e)} }\cdot \mkern-30mu\prod_{\substack{e\in E_{\mathbf i'} \\ \text{$e$ is a non-loop}}} \mkern-20mu\E\bracket{ \hat H_{12}^{N_{\mathbf i} (e)} }
         \biggr)
 \end{align*}
-where $\hat H_{ij} \coloneqq N^{-1/2}H_{ij}\sim \mathcal N(0,1)$. Since any $k$-th moment of a standard normal random variable are finitely well-defined, $\sum_{(\mathbf i,\mathbf i')\in \mathcal G_v} (\cdots)$ in the last line of the equation above does not depend on $N$. Denoting those terms (independent of $N$) as $C_v$, we have
+where $\hat H_{ij} \coloneqq N^{-1/2}H_{ij}\sim \mathcal N(0,1)$.
+
+Moreover, we can observe that $\mathcal G_v$ does not depend on $N$: as we can pick a representative whose set of vertices is contained in $\{1,\dots,v\}$. Since any $k$-th moment of a standard normal random variable are finitely well-defined, $\sum_{(\mathbf i,\mathbf i')\in \mathcal G_v} (\cdots)$ in the last line of the equation above does not depend on $N$. Denoting those terms (independent of $N$) as $C_v$, we have
 $$ \E\bracket{\langle{\mu, x^k}\rangle^2} - \paren{\E\langle{\mu,x^k}\rangle}^2 = \sum_{v=1}^{2k} C_v\cdot v!\cdot N^{-(k+2)}\binom N v. $$
 Therefore, it suffices to prove that $\mathcal G_v = \emptyset$ so that $C_v = 0$ for $v\ge k+2$, since other (lower degree) terms disappears as $N\to \infty$, since $\binom N v \sim N^{v}$.
 
