@@ -86,9 +86,9 @@ Using this observation, we have (when $N\ge 2k$)
         \prod_{\substack{e\in E_{\mathbf i'} \\ \text{$e$ is a loop}}}\mkern-10mu \E\bracket{ \hat H_{11}^{N_{\mathbf i} (e)} }\cdot \mkern-30mu\prod_{\substack{e\in E_{\mathbf i'} \\ \text{$e$ is a non-loop}}} \mkern-20mu\E\bracket{ \hat H_{12}^{N_{\mathbf i} (e)} }
         \biggr)
 \end{align*}
-where $\hat H_{ij} \coloneqq N^{-1/2}H_{ij}\sim \mathcal N(0,1)$.
+where $\hat H_{ij} \coloneqq N^{-1/2}H_{ij}\sim \mathcal N(0,1)\ \text{if $i\ne j$}, \quad\hat H_{ij} \sim \mathcal N(0,2)\ \text{if $i=j$}$.
 
-Moreover, we can observe that $\mathcal G_v$ does not depend on $N$: as we can pick a representative whose set of vertices is contained in $\{1,\dots,v\}$. Since any $k$-th moment of a standard normal random variable are finitely well-defined, $\sum_{(\mathbf i,\mathbf i')\in \mathcal G_v} (\cdots)$ in the last line of the equation above does not depend on $N$. Denoting those terms (independent of $N$) as $C_v$, we have
+Moreover, we can observe that $\mathcal G_v$ does not depend on $N$: as we can pick a representative whose set of vertices is contained in $\{1,\dots,v\}$. Since any $k$-th moment of a normal random variable are finitely well-defined, $\sum_{(\mathbf i,\mathbf i')\in \mathcal G_v} (\cdots)$ in the last line of the equation above does not depend on $N$. Denoting those terms (independent of $N$) as $C_v$, we have
 $$ \E\bracket{\langle{\mu, x^k}\rangle^2} - \paren{\E\langle{\mu,x^k}\rangle}^2 = \sum_{v=1}^{2k} C_v\cdot v!\cdot N^{-(k+2)}\binom N v. $$
 Therefore, it suffices to prove that $\mathcal G_v = \emptyset$ so that $C_v = 0$ for $v\ge k+2$, since other (lower degree) terms disappears as $N\to \infty$, since $\binom N v \sim N^{v}$.
 
