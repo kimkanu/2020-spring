@@ -1,0 +1,49 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{stackrel}
+
+\usepackage{macros-common}
+\usepackage{macros-matrix}
+\usepackage[bb]{macros-prob}
+
+\title{Homework 1}
+\subject{MAS583 Random Matrix Theory and Its Application}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+
+\solution{
+    Prove that $\E[\angl{\mu, x^k}^2] - (\E\angl{\mu,x^k})^2 \to 0$ as $N\to\infty$.
+
+    \noindent\textcolor{white!60!black}{\rule{3cm}{0.2pt}}\hfill\\[5mm]
+    %
+    As we did in the calculation of $\E\angl{\mu, x^k}$, we can rephrase $\E[\angl{\mu, x^k}^2] - (\E\angl{\mu,x^k})^2$ as follows:
+    \begin{align*}
+        &\E\bracket{\langle{\mu, x^k}\rangle^2} - \paren{\E\langle{\mu,x^k}\rangle}^2 
+        \\ &=
+        \E\bracket[\Bigg]{\paren[\bigg]{\frac 1N \sum_{j=1}^N \lambda_j^k}^{\!\!2\,}} - \paren[\Bigg]{\frac 1 N\E\sum_{j=1}^N { \lambda_j^ k}}^{\!\!2}
+        \\ &= \frac 1 {N^2} \paren{\E\bracket[\Bigg]{\paren[\bigg]{\sum_{j=1}^N \lambda_j^k}^{\!\!2\,}} - \paren[\Bigg]{\E\sum_{j=1}^N { \lambda_j^ k}}^{\!\!2}}
+        \\ &= \frac 1 {N^2} \paren{\E\bracket{(\tr H^k)^2} - \paren[\Bigg]{\E\bracket{\tr H^k}}^{\!\!2}}
+        \\ &= \frac 1 {N^2} \paren{\E\bracket[\Bigg]{\sum_{i_1,\dots,i_k=1}^N\sum_{i'_1,\dots,i'_k=1}^N H_{i_1,i_2}\cdots H_{i_k,i_1}H_{i'_1,i'_2}\cdots H_{i'_k,i'_1}} \right.
+        \\ &\qquad\qquad \left.- \paren[\Bigg]{\E\sum_{i_1,\dots,i_k=1}^N H_{i_1,i_2}\cdots H_{i_k,i_1} }^{\!\!2}}
+        \\ &= \frac 1 {N^2} {\sum_{\mathbf i,\mathbf i' \in \{1,2,\dots,N\}^k }\E\bracket{T_{\mathbf i}T_{\mathbf i'} } - \E T_{\mathbf i}\,\E T_{\mathbf i'}}
+    \end{align*}
+    where $T_{(i_1,\dots,i_k)} = H_{i_1,i_2}H_{i_2,i_3}\cdots H_{i_k,i_1}$.
+
+    Like a way we defined a graph for each $\mathbf i \in \{1,\dots,N\}^k$, we may associate a pair $(\mathbf i,\mathbf i')$ to a graph as follows:
+    
+}
+
+
+\end{document}

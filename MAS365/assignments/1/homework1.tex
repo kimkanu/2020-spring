@@ -1,0 +1,97 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{stackrel}
+
+\usepackage{macros-common}
+
+\title{Homework 1}
+\subject{MAS365 Introduction to Numerical Analysis}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\solution{
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\arabic*)},topsep=0pt]
+        \item Let us define $fl$ be the three-digit rounding function. Then the approximate arithmetic corresponding to $f(0.1)$ becomes $(e^{0.1}\ominus e^{-0.1})\otimes 10$, where $a\ominus b = fl(fl(a) - fl(b))$ and $a\otimes b = fl(fl(a)fl(b))$. Thus,
+              \begin{align*}
+                  f(0.1) & \approx fl\paren[\Big]{fl\paren[\big]{fl(e^{0.1}) - fl(e^{-0.1})}\cdot fl(10)}
+                  \\ &= fl(fl(0.111\times 10^1 - 0.905\times 10^0)\cdot fl(10))
+                  \\ &= fl(0.205 \cdot 10) = 2.05.
+              \end{align*}
+        \item Since the third Taylor polynomial of $e^x$ and $e^{-x}$ at 0 are $1 + x + \frac{x^2}2 + \frac{x^3}6$ and $1 - x + \frac{x^2}2 - \frac{x^3}6$, respectively. Hence
+              \begin{align*}
+                  f(0.1) & \approx \frac{\paren{1 + x + \frac{x^2}2 + \frac{x^3}6} - \paren{1 - x + \frac{x^2}2 - \frac{x^3}6}}x = 2 + \frac{x^2}3
+              \end{align*}
+        so that $f(0.1) \approx 2\oplus \paren{(0.1\otimes 0.1) \otimes \frac 1 3} = 2\oplus (0.333\times 10^{-2}) = 2.03.$
+    \end{enumerate}
+}
+
+\solution{
+    Let $y = \alpha\cdot 10^{n}$ where $n\in\ZZ$ and $0.1\le |\alpha| < 1$, then
+    \begin{align*}
+        \abs{\frac{y - fl(y)}{y}} &= \abs{\frac{\alpha\cdot 10^n - fl(\alpha\cdot 10^n)}{\alpha\cdot 10^n}}
+        \\ &= \abs{\frac{\alpha\cdot 10^n - fl(\alpha)\cdot 10^n}{\alpha\cdot 10^n}} = \abs{\frac{\alpha - fl(\alpha)}{\alpha}}
+    \end{align*}
+    so that we may assume $0.1 \le |y| < 1$. Since $fl$ is the $k$-digit rounding, we have $|y - fl(y)| \le 5\times 10^{-(k + 1)}$. As $1 < 1/|y| \le 10$, we finally obtain $\abs{\frac{y - fl(y)}{y}} \le 10\cdot 5\times 10^{-(k + 1)} = 5\times 10^{-k}.$
+}
+
+\solution{
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\arabic*)},topsep=0pt]
+        \item Note $\ln(n+1) - \ln n = \ln \frac{n+1}n \to \ln 1 = 0$. Since
+        \begin{align*}
+            \abs[\big]{(\ln(n+1) - \ln n) - 0} = \ln \paren{1 + \frac 1 n} \le \frac 1 n.
+        \end{align*}
+        Therefore, the rate of convergence of $\ln(n+1) - \ln n$ is $O(1/n)$, i.e., $p=1$. (Smaller $p$ is impossible since $\ln(1+1/n)\sim 1/n$ as $n\to\infty$.)
+        \item Note $\lim\limits_{h\to 0} \frac{1-\cos h}{h} \eqlh \lim\limits_{h\to 0} {\sin h} = 0$. Since
+        \begin{align*}
+            \abs{\frac{1-\cos h}{h} - 0} =\frac 2 h\sin^2 \paren{\frac h 2}\le \frac h 2.
+        \end{align*}
+        Therefore, the rate of convergence of $\frac{1-\cos h}{h}$ is $O(h)$, i.e., $p=1$. (Smaller $p$ is impossible since $\sin(h/2)\sim h/2$ as $h\to 0$.)
+    \end{enumerate}
+}
+
+\solution{
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\arabic*)},topsep=0pt]
+        \item $\sqrt[3]{31}$ is the unique real root of $f(x)\coloneqq x^3 - 31 = 0$. Note that $f(2) = -23 < 0 < f(6) = 185$, so we can use the bisection method on $[2,6]$.
+        \item When we starts, the maximum error of the approximation is 2, and this becomes half when we proceed one step. So, after $n$ iterations, the maximum error of the approximation is $2^{1-n}$, which should be $\le 10^{-2}$; it is equivalent to $n\ge 8$. Thus, we need at least 8 iterations to guarantee the $10^{-2}$ accuracy.
+    \end{enumerate}
+}
+
+\solution{
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\arabic*)},topsep=0pt]
+        \item Since $f(x)\coloneqq g(x)-x$ is strictly decreasing on $[\frac13, 1]$, it has at most one fixed point. (Or by Theorem 2.3(ii), or by \#6 below.) Since $f(\frac 1 3) = e^{-1/3} - \frac13 \ge (1 - \frac13) - \frac13 = \frac13>0$ and $f(1) = \frac 1 e - 1 = \frac{1-e}{e}<0$, there is a real number $\xi\in [\frac13,1]$ satisfying $f(\xi)=0$ by the intermediate value theorem.
+        \item Since $g(x) = e^{-x}$ satisfies $|g'(x)| \le e^{-1/3}$, we have following two bounds ($p_0=\frac23$):
+        \begin{align*}
+            |p_n - p| \le \frac13 e^{-n/3}\quad \text{and}\quad |p_n - p| \le \frac{e^{-n/3}}{1-e^{-1/3}} \abs{e^{-2/3}-\frac23}
+        \end{align*}
+        Note that the first inequality is tighter than the second one. Using the first one,
+        \begin{align*}
+            &\frac13 e^{-n/3} \le 10^{-4} \\
+            \Longleftrightarrow\, & -\frac n 3 - \log 3 \le -4\log 10 \\
+            \Longleftrightarrow\, & n\ge 3\paren{4\log 10 - \log 3} =24.335\cdots
+        \end{align*}
+        Hence, we need at least 25 iterations.
+    \end{enumerate}
+}
+
+\solution{
+    With the same setting with Theorem 2.3(ii) except for the bound of $g'$, we have
+    \[ \frac{g(p) - g(q)}{p - q} = \frac{p-q}{p-q} = 1 = g'(\xi)<1, \]
+    which is a contradiction.
+}
+
+\end{document}
