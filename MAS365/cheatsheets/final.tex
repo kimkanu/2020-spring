@@ -1,0 +1,342 @@
+\documentclass[b4paper,10pt]{memoir}
+
+\usepackage[margin=1cm]{geometry}
+\usepackage{multicol}
+\usepackage{amsmath, amsfonts, amssymb, mathtools}
+\usepackage{graphicx}
+\usepackage{ulem}
+\usepackage{macros-common}
+\usepackage{enumitem}
+\usepackage{xcolor}
+
+\makepagestyle{myplain}
+\makeevenhead{myplain}{\footnotesize \thepage}{}{\footnotesize MAS365 Cheatsheet}
+\makeoddhead{myplain}{\footnotesize MAS365 Cheatsheet}{}{\footnotesize \thepage}
+
+\makeevenfoot{myplain}{}{}{}
+\makeoddfoot{myplain}{}{}{}
+
+\pagestyle{myplain}
+
+\makeatletter
+\newcommand{\ostar}{\mathbin{\mathpalette\make@circled\star}}
+\newcommand{\make@circled}[2]{%
+  \ooalign{$\m@th#1\smallbigcirc{#1}$\cr\hidewidth$\m@th#1#2$\hidewidth\cr}%
+}
+\newcommand{\smallbigcirc}[1]{%
+  \vcenter{\hbox{\scalebox{0.77778}{$\m@th#1\bigcirc$}}}%
+}
+\makeatother
+
+\begin{document}
+
+\setlength\columnsep{20pt}
+\begin{multicols*}{3}
+    \parindent=0pt
+    \abovedisplayskip=3pt
+    \belowdisplayskip=3pt
+    \parskip=5pt
+    \allowdisplaybreaks
+    \def\nl{\hspace*{\fill}\\}
+    \def\s{$\mathllap{\bullet\ \>}$}
+
+    \setcounter{chapter}{5}
+    \section{IVP}
+    \s $dy/dt = f(t,y)$, $a\le t\le b$, $y(a)=\alpha$ is \textbf{well-posed} if it has a unique solution $y(t)$, and there are $\epsilon_0>0$ and $k>0$ s.t. $\forall \epsilon\in(0,\epsilon),\ \delta_0\in(-\epsilon,\epsilon)$, and a continuous function $\delta(t)$ satisfying $|\delta(t)|<\epsilon$, there is a unique solution to
+    $$ \dot z = f(t,z)+\delta(t),\  a\le t\le b,\ z(a)=\alpha+\delta_0 $$
+    satisfying $|z(t)-y(t)|<k\epsilon$ for all $t\in[a,b]$. \nl
+    \s When $f$ is conti and Lipschitz in $y$ on $D=[a,b]_t\times\RR_y$, $\dot y = f(t,y),\ y(a)=\alpha$ is well-posed.
+
+    \section{Euler's Method}
+    \s $w_0 = \alpha$, $w_{i+1} = w_i + hf(t_i,w_i)$.\nl
+    \s Err bound: if $f$ is Lipschitz with const $L$ on $D=[a,b]_t\times \RR_y$ and if $|y''(t)|\le M$, then
+    \[ \abs{y(t_i) - w_i} \le \frac{hM}{2L}[e^{L(t_i-a)}-1]. \]
+    \s Perturb: $u_0=\alpha+\delta_0$, $u_{i+1}=u_i+h(t_i,u_i)+\delta_{t+1}$, then under the same hypotheses,
+    \begin{align*}
+         & \abs{y(t_i) - u_i} \le
+        \\&\frac1L \paren{\frac{hM}2+\frac\delta h} [e^{L(t_i-a)}-1] +|\delta_0|e^{L(t_i-a)}
+    \end{align*}
+    where $\delta \ge \sup |\delta_i|$,
+
+    \section{Higher-Order Taylor}
+    \s The difference method $w_0 = \alpha$, $w_{i+1}=w_i + h\phi(t_i,w_i)$ has \textbf{local trunc err}
+    \[ \tau_{i+1}(h) = \frac{y_{i+1} - y_i}h - \phi(t_i,y_i),\ \ y_i=y(t_i). \]
+    \s Taylor method of order $n$: $w_0=\alpha$,
+    \[ \frac{w_{i+1}-w_i}h = \sum_{j=0}^{n-1}\frac{h^j}{(j+1)!}f^{(j)}(t_i,w_i). \]
+    Note $\dot f(t) = \partial_t f(t,y)+\partial_y f(t,y(t))\,\dot y(t)$, etc.
+    If $y\in C^{n+1}$, then the loc trunc err is $O(h^n)$.
+
+    \section{Runge--Kutta}
+    \s From 2nd Taylor, $T^{(2)}(t,y) \approx f (t + \frac h2, y + \frac h2f (t, y))$ gives `midpoint method' ($O(h^2)$):
+    \[ \frac{w_{i+1}-w_i}h = f\paren{t_i+\frac h2,w_i+\frac h2 f(t_i,w_i)}\]
+    \s From 3rd Taylor, $T^{(3)}(t,y) \approx\frac12 f(t,y)+\frac12 f(t+h, y+hf(t,y))$ gives `modified Euler method' ($O(h^2)$):
+    \[ \mkern-30mu \frac{w_{i+1}-w_i}h = f(t_i,w_i)+f(t_{i+1},w_i+hf(t_i,w_i))\]
+    \s From 3rd Taylor, $T^{(3)}(t,y) \approx a_1 f(t,y)+a_2 f (t + \alpha_1 , y + \delta_ 1 f (t + \alpha_ 2 , y + \delta_ 2 f (t, y)))$. With proper choices, this gives `Heun's method' ($O(h^3)$):
+    \begin{align*}
+         & \frac{w_{i+1}-w_i}h =\frac14 f(t_i,w_i) + \frac34 f\bigg(t_i+\frac{2h}3,
+        \\&\qquad w_i+\frac{2h}3 f\paren{t_i+\frac h3, w_i+\frac h3 f(t_i,w_i)}\mkern-5mu\bigg).
+    \end{align*}
+    \s Runge-Kutta of order 4 ($O(h^4)$): $w_0 = \alpha$,
+    \begin{align*}
+        k_1     & = h f(t_i,w_i),                \\
+        k_2     & = h f(t_i+h/2,w_i + k_1/2),    \\
+        k_3     & = h f(t_i+h/2,w_i + k_2/2),    \\
+        k_4     & = h f(t_{i+1},w_i+k_3),        \\
+        w_{i+1} & = w_i + (k_1+2k_2+2k_3+k_4)/6.
+    \end{align*}
+
+    \setcounter{section}{5}
+    \section{Multistep Methods}
+    \s $m$-step multi method:
+    \begin{align*}
+         & w_{i+1} = a_{m-1} w_i + \cdots + a_0 w_{i+1-m}
+        \\&+\textstyle h\sum_{j=0}^m b_j f (t_{i+1-m+j} , w_{i+1-j})
+    \end{align*}
+    \s $b_m=0$: explicit or open;\nl
+    \s $b_m\ne 0$: implicit or closed. \nl
+    \s 4th order Adams--Bashforth (explicit)
+    \[\mkern-40mu \frac{w_{i+1}-w_i}h = \frac{55}{24}f_i - \frac{59}{24}f_{i-1} + \frac{37}{24}f_{i-2} -\frac{9}{24}f_{i-3\ge 0} \]
+    \s 4th order Adams--Moulton (implicit)
+    \[\mkern-20mu \frac{\Delta w_i}h = \frac{9}{24}f_{i+1} +\frac{19}{24}f_{i} - \frac{5}{24}f_{i-1} +\frac{1}{24}f_{i-2\ge 0} \]
+    \s Derivation of A--B: from backward diff poly,
+    \begin{align*}
+         & \mkern-30mu f(t,y(t)) = \sum_{k=0}^{m-1} (-1)^k \binom{-s}k\nabla^k f(t_i,y(t_i))
+        \\& \mkern-30mu + s(s+1)\cdots(s+m-1) f^{(m)}(\xi_i(s), y(\xi_i(s)))
+    \end{align*}
+    where $t=t_i+sh$ so that ($\nabla p_n=p_n-p_{n-1}$)
+    \begin{align*}
+         & \int_{t_i}^{t_{i+1}} f(t,y(t))
+        \\ &= h\sum_{k=0}^{m-1} \nabla^k f(t_i,y(t_i)) (-1)^k\int_0^1\binom{-s}k\,ds
+        \\& \mkern-40mu+ \frac{h^{m+1}}{m!}\int_0^1 s\cdots(s+m-1) f^{(m)}(\xi_i(s), y(\xi_i(s)))ds
+        \\ &= h\sum_{k=0}^{m-1} \nabla^k f(t_i,y(t_i)) (-1)^k\int_0^1\binom{-s}k\,ds
+        \\ &+ h^{m+1}f^{(m)}(\mu_i,y(\mu_i))(-1)^m\int_0^1\binom{-s}m\,ds\\
+         & \text{so that }\frac{y(t_{i+1})-y(t_i)}h
+        \\ &=\sum_{k=0}^{m-1} \bracket{(-1)^k\int_0^1\binom{-s}k\,ds}\nabla^k f(t_i,y(t_i))
+        \\&+ h^{m+1}f^{(m)}(\mu_i,y(\mu_i))(-1)^m\int_0^1\binom{-s}m\,ds
+    \end{align*}
+    \s Loc trunc err of multistep method:
+    \begin{align*}
+        \tau_{i+1} & = \frac{y(t_{i+1})-\sum_{j=0}^{m-1}a_{j}y(t_{i+m-1-j})}{h}
+        \\ &-\textstyle \sum_{j=0}^m b_j f(t_{i+1-m+j},y(t_{i+1-m+j})).
+    \end{align*}
+    \s $m$-step ($m$-th order) A--B: $O(h^m)$,\nl
+    \s $(m-1)$-step ($m$-th order) A--M: $O(h^m)$.\nl
+    \s A--B: $\frac 12$(3,-1),$\frac1{12}$(23,-16,5), $\frac 1{24}$(55,-59,37,-9),\nl $\frac1{720}(1901,-2774,2616,-1274,251)$.\nl
+    \s A--M: $\frac1{12}(5,8,-1)$, $\frac 1{24}(9,19,-5,1)$, \nl $\frac1{720}(251,646,-264,106,-19).$\nl
+    \s Predictor-Corrector method: predict $w_{i+1}$ by A--B, correct $w_{i+1}$ by A--M.
+
+    \setcounter{section}{8}
+    \section{Highr Ord/Systems of DE}
+    \s $m$-th order sys of 1st order IVP:
+    \[ \dot{\mathbf u}(t) = \mathbf f(t,\mathbf u(t)),\quad \mathbf u(a)=\boldsymbol\alpha. \]
+    If $f_i$ are conti and Lipschitz in $\mathbf u$ on $D=[a,b]_t\times \RR^m_{\mathbf u}$, then the IVP has a unique sol.
+
+    \section{Stability}
+    \s A one-step diff method is consistent iff
+    \[ \lim_{h\to 0}\max_{1 \le i \le N} |\tau_i(h)| = 0.  \]
+    \s A one-step diff method is convergent iff
+    \[ \lim_{h\to 0}\max_{1 \le i \le N} |w_i - y(t_i)| = 0.  \]
+    \s A method is stable when the results depend continuously on the initial data.\nl
+    \s Supp a one-step diff method $w_{i+1}=w_i+h\phi(t_i,w_i,h)$ has a constant $h_0>0$ so that $\phi$ is conti and Lipschitz in $w$ with Lipsch const $L$ on
+    \[ D = [a,b]_t\times \RR_w \times [0,h_0]_h. \]
+    Then (a) this method is stable, (b) the method is convergent iff consistent iff $\phi(t,y,0)=f(t,y)$, (c) if there is a function $\tau$ so that $|\tau_i(h)|\le \tau(h)$ for all $i$ and $0\le h\le h_0$, then
+    \[ \abs{y(t_i) - w_i} \le \tau(h) e^{L(t_i-a)}/L. \]
+    \s A one-step diff method is convergent iff
+    \[ \lim_{h\to 0}\max_{1 \le i \le N} |w_i - y(t_i)| = 0.  \]
+    \s A one-step diff method is consistent iff
+    \[ \lim_{h\to 0}\max_{1 \le i \le N} |\tau_i(h)| = 0,\  \lim_{h\to 0}|\alpha_i-y(t_i)| =0.  \]
+    \s The stability of a multistep method w.r.t. round-off err is dictated by the magnitudes of the zeros of the char poly. \nl
+    \s Char poly: $P(\lambda) = \lambda^m-a_{m-1}\lambda^{m-1} - \cdots - a_0 = 0$ where $w_i = \alpha_i$ ($i=0,\dots,m-1$),
+    \begin{align*}
+        w_{i+1} & \textstyle = \sum_{j=0}^{m-1} a_j w_{i+1-m+j} \\&+ hF(t_i,h,w_{i+1},\dots,w_{i+1-m})
+    \end{align*}
+    If $P(\lambda)=0\implies |\lambda|\le 1$ and if the roots with abs value 1 are simple, we say this method satisfies the \textbf{root condition}, aka \textbf{stable}. \nl If 1 is the only root of char eqn with magnitude 1, \textbf{strongly stable}. O/w but satisfying the root condition, \textbf{weakly stable}. Elsewise \textbf{unstable}.\nl
+    \s If a multistep method is consistent, then stable iff convergent iff satisfying root condition.
+
+    \section{Stiff DE}
+    \s The exact solution of stiff equation has term of the form $e^{-ct}$ where $c$ is a large positive constant, called the \textbf{transient solution}. The more important portion is called the \textbf{steady-state solution}.\nl
+    \s $n$-th derivative of $e^{-ct}$ is $c^n e^{-ct}$ so that $c^n$ can cause some numerical unstability. \nl
+    \s Test equation: $y' = \lambda y,\  y(0) =\alpha$ ($\lambda<0$)\nl
+    \s Euler's method applied on test equation: we have
+    \[ |w_i - y(t_i)| = \abs{(e^{h\lambda})^i - (1+h\lambda)^i} |\alpha| \]
+    so that $|1 + h\lambda| < 1$, i.e., $h < 2/|\lambda|$ should be satisfied. \nl
+    \s Taylor:
+    $ \abs{1 + h\lambda+\cdots + \frac{h^n\lambda^n}{n!}}<1. $\nl
+    \s Multistep method
+    \[\mkern-40mu w_{i+1} = \sum_{j=0}^{m-1} a_j w_{i+1-m+j} +h\lambda\textstyle\sum_{j=0}^m b_j w_{i+1-m+j}\]
+    is equiv to
+    \[ (1-h\lambda b_m)w_{i+1}-\cdots -(a_0 + h\lambda b_0)w_{i+1-m}=0 \]
+    yielding the following assoc'd char poly:
+    \[ Q(z,h\lambda) = (1-h\lambda b_m)z^m -\cdots -(a_0+h\lambda b_0). \]
+    \s \textbf{Region of absolute stability}: for one-step, $R=\{ w=h\lambda\in\CC : |Q(w)|<1 \}$; for multistep, $R=\{w\in\CC:|\beta|<1\text{ for all }\beta:Q(\beta,w)=0 \}$.
+
+    \setcounter{chapter}{6}
+    \setcounter{section}{0}
+    \section{Gaussian Elimination}
+    \s When $a_{kk}=0$, find minimal $k+1\le p\le n$ and exchange $k$-th row with $p$-th row.
+
+    \section{Pivoting Strategies}
+    \s When $a_{kk}^{(k)}$ has relatively small magnitude, errors can increase.\nl
+    \s Partial pivoting: choose $\max_{k\le p\le n}|a_{pk}^{(k)}|$ as a pivot elem at $k$-th step. \nl
+    \s Scaled partial pivoting: do partial pivoting after scaling each row by dividing it with $s_i = \max_{1\le j\le n}|a_{ij}|$.\nl
+    \s Complete pivoting: at $k$-th step, search all $(n+1-k)^2$ entries and select one of the largest magnitude, which yields $O(n^3)$ comparisons, while partial pivotings require $O(n^2)$ (and additional $O(n^2)$ division for scaled one).
+
+    \setcounter{chapter}{7}
+    \setcounter{section}{0}
+    \section{Norms}
+    \s Matrix norm: $\|A\|\ge 0$ w/ equality iff $A=O$, $\|\alpha A\| = |\alpha|\|A\|$, $\|A+B\|\le \|A\|+\|B\|$ and $\|AB\| \le \|A\|\|B\|$. \nl
+    \s $\rho(A)$ is the largest abs value of eigenvalues. \nl
+    \s $\|A\|_2 = \sqrt{\rho(A^tA)}$ and $\rho(A) \le \|A\|$ for any induced(aka natural) norm. \nl
+    \s $A$ is convergent if every entry of $A^k$ tends to 0 as $k\to\infty$.\nl
+    \s $A$ is convergent iff $\|A^n\|=0$ for some natural norm, iff $\|A^n\|=0$ for all natural norm, iff $\rho(A)<1$, iff $A^n\mathbf x \to \mathbf 0$ for any $\mathbf x$.
+
+    \setcounter{section}{2}
+    \section{Jacobi/Gauss--Seidel}
+    \s Solve $A\mathbf x = \mathbf b$ by an iterative method.\nl
+    \s $\mathbf x^{(k)} = T\mathbf x^{(k-1)}+\mathbf c$.\nl
+    \s $A = D - L - U$, where $D$ is diagonal part, $-L$ is strict lower triangular part and $-U$ is strict upper triangular part. \nl
+    \s Jacobi: $T = D^{-1}(L+U)$, $\mathbf c = D^{-1}\mathbf b$. \nl
+    \s Gauss-Seidel: \nl $T = (D-L)^{-1}U$, $\mathbf c = (D-L)^{-1}\mathbf b$. \nl
+    \s Iterative method converges for any $\mathbf x^{(0)}$ to the unique solution to $\mathbf x = T\mathbf x + \mathbf c$ \nl $\iff\rho(T) <1.$ \nl
+    \s $\|x-x^{(k)}\| \le \|T\|^k \|x-x^{(0)}\|$, \nl
+    \s $\|x-x^{(k)}\| \le \frac{\|T\|^k}{1-\|T\|} \|x^{(1)}-x^{(0)}\|$. \nl
+    \s $A$ is \textbf{diagonally dominant} iff \nl $|a_{ii}| \ge \sum_{1\le j(\ne i)\le n} |a_{ij}|$. Without equality holding, $A$ is called to be \textbf{strictly diagonally dominant}.
+    \s A strictly diagonally dominant matrix is nonsingular, and in this case, (i) Gaussian elim can be done without row/column exchanges; (ii) both Jacobi and G--S works well (converge to the unique solution to $Ax = b$). \nl
+    \s Since $\|x^{(k)}-x\| \approx \rho(T)^k \|x^{(0)}-x\|$, we'd like to choose a method making $\rho(T)<1$ small. \nl
+    \s When $A$ has nonpositive off-diagonal entries and positive diagonal entries, then one and only one of the following holds:
+    \begin{enumerate}[topsep=0pt,itemsep=0pt,parsep=0pt,partopsep=0pt]
+        \item $0\le \rho(T_g) < \rho(T_j )<1$,
+        \item $1<\rho(T_j) < \rho(T_g)<1$,
+        \item $\rho(T_g)=\rho(T_j )=0$,
+        \item $\rho(T_g)=\rho(T_j )=1$.
+    \end{enumerate}
+
+    \section{Relaxation Techniques}
+    \s Residual vector for $\tilde {\mathbf x}$: $r = {\mathbf b} - A\tilde {\mathbf x}$. \nl
+    \s Let $r_i^{(k)}$ be the res'l vec for $\tilde {\mathbf x}_i^{(k)}$ where
+    \[ \tilde {\mathbf x}_i^{(k)} = (x_1^{(k)}, \cdots, x_{i-1}^{(k)},x_i^{(k-1)},\cdots, x_n^{(k-1)}) \]
+    where the following holds
+    \[ x_i^{(k)} = x_i^{(k-1)} + r_{ii}^{(k)}/ a_{ii} .\]
+    Note that this choice of $x_i^{(k)}$ is making $r_{i,i+1}^{(k)}=0$, and it is not necessarily efficient. Instead, consider the following:
+    \[ x_i^{(k)} = x_i^{(k-1)} + w\, r_{ii}^{(k)}/ a_{ii} .\]
+    \s $0<w<1$: under-relaxation; \nl
+    \s $w>1$: over-relaxation (aka SOR)\nl
+    \s Equivalently, ${\mathbf x}^{(k)} =T_w\mathbf x + \mathbf c_w =$
+    \begin{align*}
+        \mkern-20mu (D-wL)^{-1}[(1-w)D + wU]{\mathbf x} + (D-wL)^{-1}w{\mathbf b}
+    \end{align*}
+    \s How to choose $w$?\nl
+    \s If $a_{ii}\ne 0$, then $\rho(T_w)\ge |w-1|$ so that SOR method can converge only if $0<w<2$.\nl
+    \s Converse: if $A$ is pos def, the converse of above holds.\nl
+    \s If $A$ is pos def and tridiagonal, then $\rho(T_g) = \rho(T_j)^2 < 1$ and the optimal choice is
+    \[ w = \frac{2}{1 + \sqrt{1-\rho(T_j)^2}}. \]
+    With this choice, $\rho(T_w) = w-1$.
+
+    \section{Error Bounds}
+    \s Let $\mathbf r$ be the residual vector for $\tilde{\mathbf x}$, where $A$ is nonsingular. Then
+    \[\|\mathbf x - \tilde{\mathbf x}\| \le \|\mathbf r\| \cdot \|A^{-1}\|\]
+    and hence when $\mathbf x\ne \mathbf 0\ne \mathbf b$,
+    \[ \frac{\|\mathbf x - \tilde{\mathbf x}\|}{\|\mathbf x\|} \le K(A) \frac{\|\mathbf r\|}{\|\mathbf b\|}\]
+    where $K(A) = \|A\|\,\|A^{-1}\|$ is condition \#. When ill-conditioned ($K(A) >\!\!> 1$), making accuracy decisions based on $\|\mathbf r\|$ makes no sense. \nl
+    \s Perturb: suppose $A$ is nonsingular and $\|\delta A\| < 1/\|A^{-1}\|$, then the solution $\tilde{\mathbf x}$ to $(A + \delta A)\tilde {\mathbf x} = \mathbf b + \delta\mathbf b$ approximates $\mathbf x:A\mathbf x = \mathbf b$ where
+    \[\mkern-20mu  \frac{\|\mathbf x - \tilde{\mathbf x}\|}{\|\mathbf x\|} \le \frac{K(A)\|A\|}{\|A\|-K(A)\|\delta A\|} \paren{\frac{\|\delta\mathbf b\|}{\|\mathbf b\|} + \frac{\|\delta A\|}{\|A\|}}. \]
+
+    \section{Conjugate Gradient Methods}
+    \s Minimize $g(\mathbf x) = \angl{\mathbf x,A\mathbf x} - 2\angl{\mathbf x ,\mathbf b}$.\nl
+    \s\begin{align*}
+        t_k             & = \frac{\angl{ \mathbf v^{(k)}, \mathbf b - A \mathbf x ^{(k-1)} }}{\angl { \mathbf v^{(k)}, A\mathbf v^{(k)} }  }, \\
+        \mathbf x^{(k)} & = \mathbf x^{(k-1)} + t_k \mathbf v^{(k)},
+    \end{align*}
+    and choose a new search direction $\mathbf v^{(k+1)}$. \nl
+    \s Steepest descent: $\mathbf v^{(k+1)} = \mathbf r^{(k)} = \mathbf b - A\mathbf x^{(k)}$ since $\mathbf r = -\frac 12 \nabla g(\mathbf x)$. But converges slowly. \nl
+    \s $A$-orthog vectors $\{\mathbf v^{(1)},\dots,\mathbf v^{(n)}\}$: $\angl{\mathbf v^{(i)},A\mathbf v^{(j)}} = C_i\delta_{ij}$. Then the procedure stops after $n$ steps with exact solution, assuming exact arithmetics. \nl
+    Proof: show $\mathbf r^{(n)}$ is orthog to all $\mathbf v^{(k)}$. \nl
+    \s Conjugate direction: choosing $\mathbf v^{(k)}$'s so that $\angl{\mathbf r^{(k)}, \mathbf v^{(j)}} = 0$ for $j=1,\dots,k$. In summary,
+    \begin{align*}
+         & t_k = \frac{\angl{ \mathbf r^{(k-1)}, \mathbf r^{(k-1)} }}{\angl{\mathbf v^{(k)} , A\mathbf v^{(k)}}},\quad \mathbf x^{(k)} = \mathbf x^{(k-1)} + t_k\mathbf v^{(k)},   \\[-10pt]
+         & \mathbf r^{(k)} = \mathbf r^{(k-1)} - t_k A\mathbf v^{(k)},\quad s_k = \frac{\angl{\mathbf r^{(k)}, \mathbf r^{(k)}}}{\angl{ \mathbf r^{(k-1)}, \mathbf r^{(k-1)} }  }, \\[-5pt]
+         & \mathbf v^{(k+1)} = \mathbf r^{(k)} + s_k\mathbf v^{(k)}.
+    \end{align*}
+    \s Convergence rate of steepest descent:
+    \[\mkern-30mu g(\mathbf x^{(k)}) - g(\mathbf x^*)  \le \paren{K(A) - 1\over K(A)+1}^{2k} (g(\mathbf x^{(0)} ) - g(\mathbf x^*)).\]
+    \s Convergence rate of conjugate gradient $(k\le n)$:
+    \[ \mkern-60mu g(\mathbf x^{(k)}) - g(\mathbf x^*)  \le 4\paren{\sqrt{K(A)} - 1\over \sqrt{K(A)}+1}^{2k}\!\!\! (g(\mathbf x^{(0)} ) - g(\mathbf x^*))\]
+    \s Preconditioning: to increase $K(A)$.
+    \[ \tilde A = C^{-1}A(C^{-1})^t,\quad \tilde A (C^t\mathbf x) = C^{-1}\mathbf b. \]
+    \s One choice: $C = \operatorname{diag}(a_{11},\dots,a_{nn})$.\nl
+    \s When $A$ is pos def, Cholesky decomp: $A=LL^t$, let $C=L$, then $\tilde A = I$.
+
+    \setcounter{chapter}{8}
+    \setcounter{section}{0}
+    \section{Discrete Least $\square$'s Approx}
+    \s Minimize
+    $E=\sum_{i=1}^m (y_i - (a_1 x_i + a_0))^2$
+    yields ($\partial E/\partial a_j=0$)
+    \begin{align*}
+        a_0 & = \frac{(\sum x_i^2)(\sum y_i) - (\sum x_iy_i)(\sum x_i)}{m(\sum x_i^2) - (\sum x_i)^2}, \\
+        a_1 & = \frac{m\sum x_iy_i - (\sum x_i)(\sum y_i)}{m(\sum x_i^2) - (\sum x_iy_i)^2}
+    \end{align*}
+
+    \section{Orthog Poly \& LSA}
+    \s Approx $f\in C[a,b]$ by $P_n(x) = \sum_0^n a_j x^j$.
+    \[ \sum_{k=0}^n a_k \int_a^b x^{j+k}\,dx = \int_a^b x^j f(x)\,dx\]
+    for $ j=0,\dots,n $, i.e., with $\mathbf a = (a_0,\dots,a_n)^t$ and $\mathbf b = \paren{\int_a^b x^j f(x)\,dx}_{j=0}^n$, $H\mathbf a = \mathbf b$ where
+    \[ H_{jk} = \int_a^b x^{j+k}\,dx=\frac{b^{j+k+1} - a^{j+k+1}}{j+k+1},\]
+    $ 0\le j,k\le n$ is ill-conditioned.\nl
+    \s More efficient way: using orthog poly's $\phi_j$ ($j=0,\dots,n$), $P = \sum a_j\phi_j$ is the least square solution where
+    \[ a_j = \frac{\angl{\phi_j, f}}{\angl{\phi_j, \phi_j}},\quad \angl{f,g}  = \int_a^b wfg \,dx.\]
+    \s Recurrence formula for the orthog poly: $\phi_0(x) = 1$, $\phi_1(x) = x - B_1$, $\phi_{k(\ge 2)}(x) = (x-B_k)\phi_{k-1}(x) - C_k \phi_{k-1}(x)$,
+    \[ B_k = \frac{\angl{x\phi_j,\phi_j}}{\angl{\phi_j,\phi_j}},\quad C_k = \frac{\angl{x\phi_{k-1},\phi_{k-2}}} {\angl{\phi_{k-2},\phi_{k-2}}} .\]
+
+    \section{Chebyshev Poly's}
+    \s $T_n(x) = \cos(n \arccos(x))$, orthogonal with the weight $w(x) = (1-x^2)^{-1/2}$, $\angl{T_n,T_n} = \pi/2$.\nl
+    \s $T_n$ has $n$ simple zeros in $[-1,1]$ at $\bar x_k = \cos(\frac{2k-1}{2n}\pi)$, and its absolute extrema at $\bar x_k'  = \cos(k\pi/n)$ with $T_n(\bar x_k') = (-1)^k$. \nl
+    \s Monic Chebyshev: $\tilde T_0=1$, $\tilde T_n = T_n / 2^{n-1}$.
+    \begin{align*}
+       \textstyle \tilde T_2 = x\tilde T_1-\frac 12 \tilde T_0,\quad \tilde T_{n+1} = x\tilde T_n-\frac 14 \tilde T_{n-1}.
+    \end{align*}
+    \s $\tilde T_n$ has minimal absolute maximum value among monic poly's of deg $n$ on $[-1,1]$: for monic $P_n$ of degree $n$,
+    \[ 2^{1-n} = \max_{[-1,1]} |\tilde T_n(x)|\le \max_{[-1,1]}|P_n(x)|. \]
+    \s By letting $x_i$ to be $(i+1)$-th zero of $T_{n+1}$, (upp bd of) Lagrange interpolation error is minimized (on $[-1,1]$):
+    \begin{align*}
+       \textstyle f(x)-P(x) = \frac{f^{(n+1)} (\xi(x))}{(n+1)!}(x-x_0)\cdots (x-x_n),\\
+        \max_{[-1,1]}|f(x)-P(x)| \le \frac{\max_{[-1,1]} |f^{(n+1)}(x)|}{2^n(n+1)}\mkern25mu
+    \end{align*}
+    \s Approx $P_n$ by $(n-1)$ deg poly $P_{n-1}$:
+    \begin{align*}
+        \textstyle  \max_{[-1,1]}\abs{\frac 1{a_n}(P_n(x) - P_{n-1}(x))} \ge \frac 1{2^{n-1}}
+    \end{align*}
+    so that letting $(P_n - P_{n-1})/a_n = \tilde T_n$ we achieve the minimum:
+    \[ \max_{[-1,1]} |P_n(x) - P_{n-1}(x)| = \frac{|a_n|}{2^{n-1}} \]
+    when $P_{n-1} = P_n - a_n \tilde T_n$.
+
+    \setcounter{chapter}{9}
+    \setcounter{section}{0}
+    \section{Eigenvalues}
+    \s Ger\v sgorin Circle theorem: let $A$ be an $n\times n$ matrix and $R_i$ be the circle in the complex plane with center $a_{ii}$ and radius $\sum_{j=1,j\ne i}^n |a_{ij}|$. Then the eigenvalues of $A$ are contained within the union of these circles, and each connected component of the union of circles contains exactly $k$ eigenvalues where $k$ is the \# of circle merged to form the component.
+
+    \section{Power Method}
+    \s $|\lambda_1|\ge\cdots \ge |\lambda_n|$: eigenval's of $A$, $\|\mathbf x^{(0)}\|_\infty = 1,$ $\mathbf x^{(0)} = \sum \beta_k \mathbf v^{(k)}$, $\mathbf v^{(k)}$: unit eig'vec's corr to $\lambda_k$.
+    \begin{align*}
+        \mathbf y^{(m)} &= A\mathbf x^{(m-1)},\\
+        \mu^{(m)} &= y_{p_{m-1}}^{(m)}= \lambda_1 \bracket{\frac{ \sum_{j=1}^n (\frac{\lambda_j}{\lambda_1})^m\beta_j \mathbf v_{p_{m-1}}^{(j)} } { \sum_{j=1}^n (\frac{\lambda_j}{\lambda_1})^{m-1}\beta_j \mathbf v_{p_{m-1}}^{(j)} }  },\\
+        \mathbf x^{(m)} &= \frac{\mathbf y^{(m)}}{y_{p_m}^{(m)}} = \frac{A^m \mathbf x^{(0)}}{\|A^m \mathbf x^{(0)}\|_\infty}.
+    \end{align*}
+    where $|y_{p_j}^{(j)}| = \|\mathbf y^{(j)}\|_\infty, p_j\text{ min'l}$; $\mu^{(m)} \to \lambda_1$ and $\mathbf x^{(m)} \to \mathbf v^{(1)}$, provided by $\beta_1\ne 0$. \nl
+    \iffalse
+    \s Power method to $(A-qI)^{-1}$:
+    \[ \mu^{(m)} = \frac 1{\lambda_k - q}\bracket{\frac{ \sum_{j=1}^n (\frac{\lambda_k-q}{\lambda_j-q})^m\beta_j \mathbf v_{p_{m-1}}^{(j)} } { \sum_{j=1}^n (\frac{\lambda_k-q}{\lambda_j-q})^{m-1}\beta_j \mathbf v_{p_{m-1}}^{(j)} }  } \]
+    where $k$ satisfying
+    \[ \frac 1{|\lambda_k-q|} = \max_{1\le i\le n} \frac 1{|\lambda_k-q|} \]
+    is known. $q + 1/\mu^{(m)}\to\lambda_k$.
+    \fi
+    \s Deflation methods: matrix $B$ with same eig'val's with $A$ except the dominant eig'val replaced with 0.\nl
+    \s When $\lambda_1$ has multiplicity 1, $B=A-\lambda_1 \mathbf v^{(1)}\mathbf x^t$ (with $\mathbf x^t\mathbf v^{(1)} = 1$)
+    has eig'val's $0,\lambda_2,\dots,\lambda_n$ with assoc eig'vec's $\mathbf v^{(1)},\mathbf w^{(2)},\dots,\mathbf w^{(n)}$ where
+    \[ \mathbf v^{(i)} = (\lambda_i-\lambda_1)\mathbf w^{(i)}+\lambda_1 (\mathbf x^t\mathbf w^{(i)})\mathbf v^{(1)}. \]
+    \s Wielandt deflation: $\mathbf x = (a_{i1},\dots,a_{in})^t / (\lambda_1 v_i^{(1)})$ provided by $v_i^{(1)} = (\mathbf v^{(1)})_i\ne 0$. With this, $i$-th row of $B$ is a zero vector. Therefore, $B\mathbf w = \lambda\mathbf w$ implies $i$-th entry of $\mathbf w^{(j\ge 2)}$ is 0.
+    \s After Wielandt, $B'$ obtained from $B$ removing $i$-th row and column has $\lambda_2,\dots,\lambda_n$. \nl
+    \s Eigenvec for $B$ from $B'$: insert 0 between $(i-1)$-th and $i$-th entry.
+\end{multicols*}
+
+\end{document}
