@@ -1,0 +1,112 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{listings}
+\usepackage{stackrel}
+
+\usepackage{macros-common}
+
+\title{Homework 2}
+\subject{MAS365 Introduction to Numerical Analysis}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\solution{
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\alph*)},topsep=0pt]
+        \item Since the $\lim_{n\to\infty}p_n=0$, $\lim_{n\to\infty} \frac{|p_{n+1}|}{|p_n|} = \lim_{n\to\infty} \paren{1+\frac 1 n}^k = 1$ implies that $p_n$ converges sublinearly to 0.
+        \item Since the $\lim_{n\to\infty}p_n=0$, $\lim_{n\to\infty} \frac{|p_{n+1}|}{|p_n|^2} = \lim_{n\to\infty} \frac{10^{-2^{n+1}}}{10^{-2^{n+1}}} = 1 \in (0,\infty)$ implies that $p_n$ converges quadratically to 0.
+    \end{enumerate}
+}
+
+\solution{
+    Suppose $m\ge 2$, since the case of $m=1$ is covered by the class material. Letting $f(x) = (x-p)^m h(x)$ with $h(p)\ne 0$, $h^{(m)}(x) = (f(x)/(x-p)^m)^{(m)}$ exists and is continuous, and
+    \begin{align*}
+        g'(x) & = 1 - \frac{mf'(x)^2 - mf(x)f''(x)}{f'(x)^2}
+        \\ &= 1 - m + \frac{mf(x)f''(x)}{f'(x)^2}
+        \\ &= 1 - m + m(x-p)^m h(x)\times
+        \\ &\qquad\frac{(x-p)^m h''(x) + 2m(x-p)^{m-1} h'(x) + m(m-1)(x-p)^{m-2} h(x)}{((x-p)^mh'(x) + m(x-p)^{m-1}h(x))^2}
+        \\ &= 1 - m + m h(x)\,\frac{(x-p)^2 h''(x) + 2m(x-p) h'(x) + m(m-1)h(x)}{((x-p)h'(x) + mh(x))^2}
+    \end{align*}
+    so that
+    \begin{align*}
+        g'(p) = 1 - m + m h(p)\,\frac{m(m-1)h(p)}{(mh(p))^2}=0.
+    \end{align*}
+}
+
+\solution{
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\alph*)},topsep=0pt]
+        \item Note that $p=e^{-x}$ with $p_n-p = p_{n+1}-p - \frac{(-x)^{n+1}}{(n+1)!}$ and we have
+              \begin{align*}
+                  |p_{n+1}-p| \le \frac{ x^{n+2} }{(n+2)!}
+              \end{align*}
+              by the estimation for the error term in $(n+1)^\text{th}$ Taylor polynomial. So,
+              \begin{align*}
+                  \lim_{n\to\infty}\abs{ \frac{p_{n+1}-p}{ (-x)^{n+1}/(n+1)! } } \le  \lim_{n\to\infty}\abs{  \frac{ x^{n+2}/(n+2)! }{ (-x)^{n+1}/(n+1)! } } =\lim_{n\to\infty} \frac{|x|}{n+2} = 0.
+              \end{align*}
+              This implies that
+              \begin{align*}
+                  \lim_{n\to\infty} \abs{\frac{p_{n+1}-p}{p_{n}-p}} & =  \lim_{n\to\infty} \abs{\frac{p_{n+1}-p}{ p_{n+1}-p - \frac{(-x)^{n+1}}{(n+1)!} }}
+                  \\ &= \lim_{n\to\infty} \abs{\frac{ \frac{p_{n+1}-p}{(-x)^{n+1}/(n+1)!} }{\frac{p_{n+1}-p}{(-x)^{n+1}/(n+1)!}-1}} =0
+              \end{align*}
+              whence $\lim_{n\to\infty}{\frac{p_{n+1}-p}{p_{n}-p}} =0 < 1$.
+        \item
+              \begin{align*}
+                  \hat p_{0} &= 0.33333,\quad
+                  \hat p_{1} = 0.37500,\quad
+                  \hat p_{2} = 0.36667 \\
+                  \hat p_{3} &= 0.36806,\quad
+                  \hat p_{4} = 0.36786,\quad
+                  \hat p_{5} = 0.36788.
+              \end{align*}
+
+              
+
+              
+    \end{enumerate}
+}
+
+\begin{lstlisting}[language=Matlab,basicstyle=\footnotesize\ttfamily]
+    % MATLAB code
+    x = 1;
+    N = 5;
+    
+    p = zeros(1, 1 + N + 2);
+    p(1) = 1;
+    
+    % p_j
+    for j=1:N+2
+        p(j+1) = p(j) + (-x)^(j) / factorial(j);
+    end
+    
+    % \hat p_j
+    hp = zeros(1, 1 + N);
+    for j=1:1+N
+        hp(j) = ...
+            p(j) - ((p(j+1) - p(j))^2) / ...
+            (p(j+2) - 2 * p(j+1) + p(j));
+        fprintf('\\hat p_{%d} = %.5f\n', j-1, hp(j))
+    end
+    
+    fprintf('true value: %.5f\n', exp(-1))
+\end{lstlisting}
+
+\solution{
+    \begin{align*}
+        P(x) &= \sum_{k=0}^2 f(x_k) L_{n,k}(x)
+        \\ &= 1\cdot \frac{(x-\frac {11}8)(x-2)}{(1-\frac{11}8)(1-2)} + \frac{8^2}{11^2}\cdot \frac{(x-1)(x-2)}{(\frac{11}8-1)(\frac{11}8-2)} + \frac 1 {2^2} \cdot \frac{(x-1)(x-\frac{11}8)}{(2-1)(2-\frac{11}8)}.
+    \end{align*}
+}
+
+\end{document}

@@ -1,0 +1,149 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{listings}
+\usepackage{stackrel}
+\usepackage{mathdots}
+
+\usepackage{macros-common}
+
+\allowdisplaybreaks
+
+\title{Homework 7}
+\subject{MAS365 Introduction to Numerical Analysis}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\solution{
+Note that $m=4$ and
+\begin{align*}
+    F(t_i,h,&w_{i+1},\dots,w_{i+1-m}) 
+    \\ &= \frac{h}{24}[55f(t_i,w_i)-59f(t_{i-1},w_{i-1}) + 37 f(t_{i-2},w_{i-2}) - 9f(t_{i-3},w_{i-3})] 
+\end{align*}
+where $t_{i-j} = t_i - jh\ (j=1,2,3)$.
+
+\noindent(a) If $f\equiv 0$, then clearly $F \equiv 0$, from the formula above.
+
+\noindent(b)
+\begin{align*}
+    &\abs{F(t_i,h,w_{i+1},\dots,w_{i+1-m})-F(t_i,h,v_{i+1},\dots,v_{i+1-m})}
+    \\&\quad\le \frac{h}{24} \begin{bmatrix}
+        55 \\ 59 \\ 37 \\ 9
+    \end{bmatrix}^t \begin{bmatrix}
+        \abs{f(t_i,w_i) - f(t_i,v_i)} \\
+        \abs{f(t_i,w_{i-1}) - f(t_i,v_{i-1})} \\
+        \abs{f(t_i,w_{i-2}) - f(t_i,v_{i-2})} \\
+        \abs{f(t_i,w_{i-3}) - f(t_i,v_{i-3})} \\
+    \end{bmatrix}
+    \\&\quad\le \frac{h}{24} \begin{bmatrix}
+        55 \\ 59 \\ 37 \\ 9
+    \end{bmatrix}^t \begin{bmatrix}
+        L \abs{w_{i  }-v_{i  }} \\
+        L \abs{w_{i-1}-v_{i-1}} \\
+        L \abs{w_{i-2}-v_{i-2}} \\
+        L \abs{w_{i-3}-v_{i-3}} \\
+    \end{bmatrix}
+    \\&\le \frac{59hL}{24}\,\sum_{j=0}^m \abs{w_{i+1-j} - v_{i+1-j}}.
+\end{align*}
+}
+
+\solution{
+    By Theorem 5.20 in the textbook, the Runge--Kutta method is consistent iff
+    \[ \phi(t, y, 0) = f (t, y),\qquad \text{for any $t\in [a,b]$ and $y\in\RR$} \]
+    which is certainly true as we know by putting $h=0$.
+}
+
+\solution{
+    (a) For $i = 2,3,\dots,N-1$,
+    \[ \tau_{i+1}(h) = \frac{y(t_{i+1}) + \frac32 y(t_i) - 3y(t_{i-1}) + \frac12 y(t_{i-2}) } h - 3f(t_i,y(t_i)). \]
+
+    (b) The characteristic equation is \[ \lambda^3 + \frac32 \lambda^2 - 3\lambda + \frac12 =0, \]
+    whose roots are $\lambda=1$ and $\lambda = (-5 \pm \sqrt{33})/4$, where $|(-5-\sqrt{33})/4| >1.$ Thus, it does not satisfy the root condition and hence it is not stable.
+
+    Assume that $y$ has the second derivative on an open interval containing $[a,b]$, the interval on where we consider the differential equation. Moreover, assume that 
+    \[ \lim_{h\to 0} \abs{w_i - y(t_i)} = 0,\qquad i = 1,2. \] Then,
+    \begin{align*}
+        \tau_{i+1}(h) &= \frac{y(t_{i+1}) + \frac32 y(t_i) - 3y(t_{i-1}) + \frac12 y(t_{i-2}) } h - 3f(t_i,y(t_i))
+        \\ &= \frac{y(t_{i} + h) + \frac32 y(t_{i}) - 3y(t_{i}-h) + \frac12 y(t_{i}-2h) } h - 3f(t_i,y(t_i))
+        \\ &= \frac{y(t_{i} + h) + \frac32 y(t_{i}) - 3y(t_{i}-h) + \frac12 y(t_{i}-2h) } h - 3f(t_i,y(t_i))
+        \\ &= \frac{\paren{\begin{array}{@{}l@{}}
+            y(t_{i}) + hy'(t_i) + \frac{h^2}2 y''(\xi_{i+1}) + \frac32 y(t_{i})
+           \\\qquad - 3[y(t_{i}) - hy'(t_i) + \frac{h^2}2 y''(\xi_{i-1})] 
+           \\\qquad+ \frac12 [y(t_{i})- 2h y'(t_i) + 2h^2 y''(\xi_{i-2})] 
+        \end{array}}} h - 3f(t_i,y(t_i))
+        \\ &= h \paren{ \frac12 y''(\xi_{i+1}) - \frac32 y''(\xi_{i-1}) + y''(\xi_{i-2}) } \longrightarrow 0
+    \end{align*}
+    for some $\xi_{i+1},\xi_{i-1},\xi_{i-2}\in [a,b]$. Therefore, under the assumptions made above, the given method is consistent. Since it is consistent and unstable, it is not convergent by the Theorem 5.24.
+}
+
+\solution{
+\begin{align*}
+    \left[\begin{array}{@{}ccc|c@{}}
+        -1 & 4 & 1 & 8 \\
+        \frac53 & \frac23 & \frac23 & 1 \\
+        2 & 1 & 4 & 11 \\
+    \end{array}\right] &\rightarrow\left[\begin{array}{@{}ccc|c@{}}
+        -1 & 4 & 1 & 8 \\
+        0 & 7.5 & 2.4 & 15. \\
+        0 & 9.0 & 6.0 & 27. \\
+    \end{array}\right]
+    \\ &\rightarrow\left[\begin{array}{@{}ccc|c@{}}
+        -1 & 4 & 1 & 8 \\
+        0 & 7.5 & 2.4 & 15. \\
+        0 & 0 & 3.1 & 9.0 \\
+    \end{array}\right]
+\end{align*}
+By the backward substitution,
+\begin{align*}
+    x_3 &= \frac{9.0}{3.1} = 2.9,\\
+    x_2 &= \frac{15. - 2.4\times 2.9}{7.5}= \frac{15. - 7.0}{7.5} = \frac{8.0}{7.5} = 1.1, \\
+    x_1 &= \frac{8.0 - 4.0\times 1.1 - 1\times 2.9}{-1} = \frac{0.70}{-1} = -0.70.
+\end{align*}
+Thus, the solution obtained by Gaussian elimination with the backward substitution using 2-digit rounding is $(x_1,x_2,x_3)=(-0.7, 1.1, 2.9)$.
+}
+
+\solution{
+(a)
+\begin{align*}
+    \left[\begin{array}{@{}cc|c@{}}
+        58.9 & 0.03 & 59.2 \\
+        -6.10 & 5.31 & 47.0
+    \end{array}\right] &\to 
+    \left[\begin{array}{@{}cc|c@{}}
+        58.9 & 0.03 & 59.2 \\
+        0 & 5.31 & 53.0
+    \end{array}\right] 
+    \\&\to x_2 = \frac{53.0}{5.31} = 9.98,\ x_1 = \frac{59.2 - 0.03\times 9.98}{58.9} = 1.00.
+\end{align*}
+
+\noindent(b)
+\begin{align*}
+    \left[\begin{array}{@{}cc|c@{}}
+        58.9 & 0.03 & 59.2 \\
+        -6.10 & 5.31 & 47.0
+    \end{array}\right] &\to 
+    \left[\begin{array}{@{}cc|c@{}}
+        58.9 & 0.03 & 59.2 \\
+        0 & 5.31 & 53.2
+    \end{array}\right] 
+    \\&\to x_2 = \frac{53.2}{5.34} = 10.0,\ x_1 = \frac{59.2 - 0.03\times 10.0}{58.9} = 1.00.
+\end{align*}
+
+\noindent(c) Since, in the first column, the element in the first row has larger absolute value than one in the second row, there is no row exchange while partial pivoting. Therefore, the result is the same with (a). 
+
+}
+
+
+
+\end{document}

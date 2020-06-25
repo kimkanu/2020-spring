@@ -1,0 +1,160 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{listings}
+\usepackage{stackrel}
+\usepackage{mathdots}
+
+\usepackage{macros-common}
+
+\allowdisplaybreaks
+
+\title{Homework 5}
+\subject{MAS365 Introduction to Numerical Analysis}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\solution{
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\alph*)},topsep=0pt]
+        \item Three-point midpoint formula yields an error no greater than $\frac{h^2}6 |f^{(3)}(\xi)|$, and five-point endpoint formula yields an error no greater than $\frac{h^4}5 |f^{(5)}(\xi)|$. With an assumption that $f^{(3)}$ and $f^{(5)}$ are of the same scale, the five-point endpoint formula is better than the three-point midpoint formula in general. Using the five-point midpoint formula if it is possible and the five-point endpoint formula otherwise, we have ($h=0.2$)
+              \begin{itemize}
+                  \item $f'(-3.0) \approx \frac{1}{12h}[-25 f(-3.0) + 48f(-2.8) - 36f(-2.6)$ \\
+                                $ + 16f(-2.4) - 3f(-2.2)] = \mathbf{-19.08087},$ (endpoint)
+                  \item $f'(-2.8) \approx \frac{1}{12h}[-25 f(-2.8) + 48f(-2.6) - 36f(-2.4)$ \\
+                                $ + 16f(-2.2) - 3f(-2.0)] = \mathbf{-15.44088},$ (endpoint)
+                  \item $f'(-2.6) \approx \frac{1}{12h}[f(-3.0) -8f(-2.8) +8f(-2.4)-f(2.2)] = \mathbf{-12.46303},$ (midpoint)
+                  \item $f'(-2.4) \approx \frac{1}{12h}[f(-2.8) -8f(-2.6) +8f(-2.2)-f(2.0)] = \mathbf{-10.02259},$ (midpoint)
+                  \item $f'(-2.2) \approx \frac{1}{-12h}[-25 f(-2.2) + 48f(-2.4) - 36f(-2.6)$ \\
+                                $ + 16f(-2.8) - 3f(-3.0)] = \mathbf{-8.020973},$ (endpoint, reversed)
+                  \item $f'(-2.0) \approx \frac{1}{-12h}[-25 f(-2.0) + 48f(-2.2) - 36f(-2.4)$ \\
+                                $ + 16f(-2.6) - 3f(-2.8)] = \mathbf{-6.385728},$ (endpoint, reversed)
+              \end{itemize}
+        \item \
+              \begin{table}[ht]
+                  \hspace*{10mm}\begin{tabular}{c|c|c|c|l}
+                      $x$    & $f(x)$     & $f'(x)$ (approx) & $f'(x)$ (true) & $f_{approx}'(x)-f_{true}'(x)$ \\ \hline
+                      $-3.0$ & $16.08554$ & $-19.08087$      & $-19.08554$    & \kern30pt $0.00467$           \\
+                      $-2.8$ & $12.64465$ & $-15.44088$      & $-15.44465$    & \kern30pt $0.00377$           \\
+                      $-2.6$ & $9.863738$ & $-12.46303$      & $-12.46374$    & \kern30pt $0.00071$           \\
+                      $-2.4$ & $7.623176$ & $-10.02259$      & $-10.02318$    & \kern30pt  $0.00059$          \\
+                      $-2.2$ & $5.825013$ & $-8.020973$      & $-8.025013$    & \kern30pt $0.004040$          \\
+                      $-2.0$ & $4.389056$ & $-6.385728$      & $-6.389056$    & \kern30pt $0.003328$
+                  \end{tabular}
+              \end{table}\\[-5mm]
+
+              For those obtained by the midpoint formula, the error bound is $(h=1/5, f^{(5)}(x)=-e^{-x})$
+              \begin{align*}
+                  |\text{absolute error}| \le \frac{h^4}{30}\,\max_{x\in [-3,-2]}|f^{(5)}(x)| = e^3/(30\cdot 5^4) \approx 0.0010712286.
+              \end{align*}
+
+              For those obtained by the endpoint formula, the error bound is $(h=1/5, f^{(5)}(x)=-e^{-x})$
+              \begin{align*}
+                  |\text{absolute error}| \le \frac{h^4}{5}\,\max_{x\in [-3,-2]}|f^{(5)}(x)| = e^3/5^5 \approx 0.0064273718.
+              \end{align*}
+
+              Both bounds are admissible, seeing the actual data.
+    \end{enumerate}
+}
+
+\solution{
+    \[\begin{array}{r|r@{\,\,}r@{\ }r@{\ }r@{\ }r@{\ }r@{\ }l}
+            - & M =        & N(h) \,+                 & K_1 h^2 \,+          & K_2 h^4 \,+               & K_3 h^6 \,+               & \cdots                    \\
+            + & \big[ M =  & N(\frac h3) \,+          & K_1 (\frac h3)^2 \,+ & K_2 (\frac h3)^4 \,+      & K_3 (\frac h3)^6 \,+      & \cdots & \big] \times 3^2 \\\hline
+            = & (3^2-1)M = & [3^2 N(\frac h3) - N(h)] & \,+                  & K_2(\frac 1{3^2}-1)h^4\,+ & K_3(\frac 1{3^4}-1)h^6\,+ & \cdots
+        \end{array}\]
+    Now define $\tilde N(h) = (3^2-1)^{-1} [3^2N(\frac h3)-N(h)]$ and $$\tilde K_j = \frac1{3^2-1} (3^{-2(j-1)} -1) K_j.$$ In a similar fashion, we have
+    \[\begin{array}{r|r@{\,\,}r@{\ }r@{\ }r@{\ }r@{\ }l}
+            - & M =        & \tilde N(h) \,+                       & \tilde K_2 h^4 \,+          & \tilde K_3 h^6 \,+          & \cdots                    \\
+            + & \big[ M =  & \tilde N(\frac h3) \,+                & \tilde K_2 (\frac h3)^4 \,+ & \tilde K_3 (\frac h3)^6 \,+ & \cdots & \big] \times 3^4 \\\hline
+            = & (3^4-1)M = & [3^4\tilde N(\frac h3) - \tilde N(h)] & \,+                         & K_3(\frac 1{3^2}-1)h^6\,+   & \cdots
+        \end{array}\]
+    Therefore,
+    \begin{align*}
+        \text{\raisebox{1pt}{$\stackrel{\approx}{N}$}}(h) & \coloneqq \frac 1{3^4-1} \paren{ 3^4 \tilde N\paren{\frac h3} - \tilde N(h)}
+        \\ &= \frac{3^6}{(3^4-1)(3^2-1)}\,N\paren{\frac h9}
+        \\ &\qquad\qquad- \frac{3^4+3^2}{(3^4-1)(3^2-1)}\,N\paren{h\over 3} + \frac{1}{(3^4-1)(3^2-1)}\,N(h)
+        \\ &= \frac{1}{640}\bracket{729 N\paren{\frac h9}-90 N\paren{h\over 3} +N(h)}
+    \end{align*}
+    is an $O(h^6)$ approximation to $M$.
+}
+
+\newpage
+
+\solution{
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\alph*)},topsep=0pt]
+        \item \
+              \begin{table}[ht]
+                  \begin{center}
+                      \begin{tabular}{l|l}
+                          \multicolumn{1}{c|}{$h$} & \multicolumn{1}{c}{$N(h)$} \\ \hline
+                          $0.01$                   & $2.718304481241747$        \\
+                          $0.02$                   & $2.718372444800622$        \\
+                          $0.04$                   & $2.718644377221238$
+                      \end{tabular}
+                  \end{center}
+              \end{table}\\[-5mm]
+              An $O(h^j)$ approximation of $e$ can be obtained by the following recurrence formula: $N_1(h) = N(h) = e+O(h)$,
+              \begin{align*}
+                  N_j(h) = N_{j-1}(h/2) + \frac{N_{j-1}(h/2) - N_{j-1}(h)}{2^{j-1}-1},
+              \end{align*}
+              and it gives
+              \begin{align*}
+                  N_2(h) &= 2N(h/2) - N(h) = 2 \paren{4+h\over 4-h}^{2/h} - \paren{2+h \over 2-h}^{1/h}, \\
+                  N_3(h) &= N_2(h/2) + \frac{N_2(h/2) - N_2(h)}{3} = \frac43 N_2(h/2) - \frac13 N_2(h)
+                  \\ &= \frac 83 N(h/4) - 2 N(h/2) + \frac13 N(h) = e+O(h^3).
+              \end{align*}
+              Evaluating at $h=0.4$, we have $N_3(0.4) = 2.718281852783827.$
+              \item Since $e-N(h) = K_1h+K_2h^2+\cdots$ is an even function, every coefficient of an odd degree term should be vanished. Therefore, $K_j=0$ for every odd $j$. Then an $O(h^{2j})$ approximation $\tilde N_j$ to $e$ can be made as follows: $\tilde N_{1}(h) = N(h) = e+O(h^2)$,
+              \[\mkern-100mu\begin{array}{r|r@{\,\,}r@{\ }r@{\ }r@{\ }r@{\ }l}
+                - & e =        & \tilde N_{j-1}(h) \,+                       & \tilde K_{2(j-1)} h^{2(j-1)} \,+          & \tilde K_{2j} h^{2j} \,+          & \cdots                    \\
+                + & \big[ e =  & \tilde N_{j-1}(\frac h2) \,+                & \tilde  K_{2(j-1)} (\frac h2)^{2(j-1)} \,+ & \tilde K_{2j} (\frac h2)^{2j} \,+ & \cdots & \big] \times 2^{2(j-1)} \\\hline
+                = & (2^{2(j-1)}-1)M = & [2^{2(j-1)}\tilde N_{j-1}(\frac h2) &-\, \tilde N_{j-1}(h)]  \qquad\quad+              & \tilde K_{2j}(\frac 1{2^2}-1)h^{2j}\,+   & \cdots
+            \end{array},\]
+            i.e., $$\tilde N_j(h) = \tilde N_{j-1}(h/2) + \frac{\tilde N_{j-1}(h/2) - \tilde N_{j-1}(h)}{2^{2(j-1)}-1} = e+O(h^{2j}).$$
+            We need to find $\tilde N_3$:
+            \begin{align*}
+                \tilde N_2(h) &= N(h/2) + \frac{N(h/2)-N(h)}{3} = \frac43 N(h/2) - \frac13 N(h), \\
+                \tilde N_3(h) &= \tilde N_2(h/2) + \frac{\tilde N_2(h/2)-\tilde N_2(h)}{15}
+                \\ &= \frac 1{45}\bracket { 64N\paren{h\over 4} - 20N\paren{h\over 2} + N(h) }.
+            \end{align*}
+            Evaluating at $h=0.4$, we have $\tilde N_3(0.4) = 2.718281828459570.$
+     \end{enumerate}
+}
+
+\solution{
+   With $f(x) = x^k$ ($k=0,1,2,3,4$),
+   \begin{align*}
+       \int_{-1}^1 \,dx &= 2 = a+b+c,\\
+       \int_{-1}^1 x^k\,dx &= \frac1{k+1}(1 - (-1)^{k+1}) = a\cdot (-1)^k + c + dk(-1)^{k-1}+ek.\quad (k>0)
+   \end{align*}
+   Thus, we have
+   \[ \begin{pmatrix}
+       1&1&1&0&0 \\
+       -1&0&1&1&1\\
+       1 & 0 & 1 & -2 &2\\
+       -1 & 0 & 1 & 3 & 3\\
+       1 & 0 & 1 & -4 & 4
+    \end{pmatrix} \begin{pmatrix}
+       a\\b\\c\\d\\e
+   \end{pmatrix} = \begin{pmatrix}
+       2\\ 0\\ 2/3 \\ 0 \\ 2/5
+   \end{pmatrix}, \]
+   which yields $(a,b,c,d,e) = \frac 1 {15}(7, 16, 7, 1, -1)$.
+}
+
+
+
+\end{document}

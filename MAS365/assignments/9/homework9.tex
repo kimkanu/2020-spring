@@ -1,0 +1,54 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{listings}
+\usepackage{stackrel}
+\usepackage{mathdots}
+
+\usepackage{macros-common}
+
+\allowdisplaybreaks
+
+\title{Homework 9}
+\subject{MAS365 Introduction to Numerical Analysis}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\solution{
+    Denote $\angl{f,g} = \int_0^\infty f(x)g(x)e^{-x}\,dx$.
+
+    (a) Choose $\tilde L_1(x) = x$, then
+    \[ \angl{L_0,L_0} = \int_0^\infty e^{-x}\,dx = 1,\qquad \angl[\big]{L_0,\tilde L_1} = \int_0^\infty xe^{-x}\,dx = 1 \]
+    so that $L_1 = \tilde L_1 - \frac{\angl[\big]{L_0,\tilde L_1}}{\angl{L_0,L_0}}\,L_0 = x-1$ is orthogonal to $L_0$. Note that
+    \[ \angl{L_1,L_1} = \int_0^\infty (x-1)^2 e^{-x}\,dx = 1. \] Choosing $\tilde L_2(x) = x^2$,
+    \[ \angl[\big]{L_0,\tilde L_2}= \int _0^\infty x^2e^{-x}\,dx = 2,\qquad \angl[\big]{L_1,\tilde L_2} = \int_0^\infty (x-1)x^2 e^{-x}\,dx = 4 \]
+    so that
+    \[ L_2 = \tilde L_2 - \frac{\angl{L_0,\tilde L_2}}{\angl{L_0,L_0}}\,L_0 - \frac{\angl{L_1,\tilde L_2}}{\angl{L_1,L_1}}\,L_1 = x^2 - 2 - 4(x-1) = x^2-4x+2. \]
+    Note that $\angl{L_2,L_2} = 4$.
+
+    \noindent(b) We need to find
+    \[ P(x) = \sum_{k=0}^2 a_k L_k(x) \]
+    where the coefficients satisfy the following:
+    \[ \int_0^\infty f(x) L_j(x) e^{-x}\,dx = \sum_{k=0}^2 a_k \int_0^\infty L_j(x) L_k(x) e^{-x}\,dx,\qquad j=0,1,2,\]
+    that is,
+    \[ \angl{f,L_j} = \sum_{k=0}^2 a_k \angl{L_j,L_k} = a_j \angl{L_j,L_j},\quad\therefore a_j = \frac{\angl{f,L_j}}{\angl{L_j,L_j}},\quad j=0,1,2\]
+    by the orthogonality.
+    Since we have
+    \[ \angl{f,L_0} = 6,\qquad \angl{f,L_1} = 18,\qquad \angl{f,L_2} = 36, \]
+    $a_0 =6$, $a_1 = 18$, $a_2 = 9$ so that
+    \[ P(x) = 6 + 18(x-1) + 9(x^2-4x+2) = 9 x^2 - 18 x + 6. \]
+}
+
+
+\end{document}

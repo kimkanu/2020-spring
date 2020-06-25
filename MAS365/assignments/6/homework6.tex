@@ -1,0 +1,127 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{listings}
+\usepackage{stackrel}
+\usepackage{mathdots}
+
+\usepackage{macros-common}
+
+\allowdisplaybreaks
+
+\title{Homework 6}
+\subject{MAS365 Introduction to Numerical Analysis}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\solution{
+(a) $f(t,y) = t^{-2}(\sin(2t) - 2ty)$ is continuous on $D = [1,2]\times \RR$, and in fact, it is linear (of degree 1 as a polynomial) in $y$ so that it is obviously Lipschitz in $y$ on $D$. Therefore, the given IVP has a unique solution $y(t)$ for $1\le t\le 2$, by Theorem 2 in the lecture slides.
+
+\noindent(b) $f(t, y) = \cos(yt)$ is continuous on $D = [0,1] \times \RR$ and Lipschitz in $y$ because its (partial) derivative w.r.t. $y$ is $-t\sin(yt)$ is bounded so that by the mean value theorem, for any $t\in[0,1]$ and $y_1\ne y_2$,
+\[ \frac{\abs{f(t,y_1) -f(t, y_2)}}{\abs{y_1-y_2}} = |\partial_y f(t,\xi)| \le |t| \le 1 \]
+for some $\xi$. Hence, by Theorem 3 in the lecture slides, the given IVP is well-posed.
+}
+
+\solution{
+(a) $w_0 = y(0) = 1$,
+\[ w_{i+1} = w_i + h\mkern1mu f(t_i,w_i) = w_i + \frac 12 \exp\bracket{ \frac i 2 - w_i }. \]
+\begin{table}[h]
+    \centering
+    \begin{tabular}{cc}
+        $t_i$ & $w_i$     \\ \hline
+        0.0   & 1.0000000 \\
+        0.5   & 1.3678794 \\
+        1.0   & 1.7877203
+    \end{tabular}
+\end{table}
+
+\noindent(b) Since $f(t,y) = e^{t-y}$ is not Lipschitz in $y$ on $D = [0,1]\times\RR$, we cannot use Theorem 4 directly. However, we know that $y_i = y(t_i) \ge 1$ since $y(t_i) = y(0) + \int_0^t{y_i} e^{t-y(t)}\,dt \ge y(0)$. Similarly, $w_i\ge 1$. Therefore,
+\[ \abs{\frac{ e^{t_i}(e^{-y_i} - e^{-w_i}) }{ y_i - w_i }} = e^{t-\xi_i},\qquad \xi_i\text{ is between $y_i$ and $w_i$} \]
+implying
+\begin{align*}
+    \abs{y_{i+1} - w_{i+1}} & \le |y_i - w_i|(1 + h\,e^{t_i - \xi_i}) + \frac{h^2}2 |y''(\eta_i)|
+    \\ &\le |y_i - w_i|(1+he^{t_i-1}) + \frac{h^2}2 \sup_{t\in[0,1]}|y''(t)|
+    \\ &\le |y_i - w_i|(1+h) + \frac{h^2}2 \sup_{t\in[0,1]}|y''(t)| \tag{$t_i \in [0,1]$}
+\end{align*}
+for some $\xi_i$ between $y_i$ and $w_i$, so that $\xi_i\ge 1$, and $\eta_i\in [0,1]$. Since
+\[ y''(t) = \frac{(e-1)e^t}{(e^t + e-1)^2} \]
+attains its maximum at $t=\log(e-1)$ with the value $1/4$, we have the following recursive error bound:
+\[ \abs{y_{i+1} - w_{i+1}} \le \abs{y_i - w_i}(1 + h) + \frac{h^2}8 \]
+yielding
+\[ \abs{y(t_i) - w_i} \le \frac{h}8\, (e^{ih} - 1) = \frac{h}8\, (e^{t_i} - 1) \]
+by Lemma 1. ($t_i = ih$)
+}
+
+\solution{
+    $f(t,y) = 1 + t\sin(ty)$,
+    \begin{align*}
+        f'(t,y(t)) & = \sin(ty) + t\cos(ty) (y + ty'(t))
+        \\ &= \sin(ty) + t\cos(ty) (y + t + t^2\sin(ty))
+    \end{align*}
+    $w_0 = y(0)=0$,
+    \begin{align*}
+        w_{i+1} & = w_i + h\,f(t_i,w_i) + \frac {h^2}2\,f'(t_i,w_i)
+        \\ &= w_i + h\paren{1 + t_i \sin (t_i w_i)} + \frac {h^2}2\paren{ \sin(t_iw_i) + t_i\cos(t_iw_i) (w_i + t_i + t_i^2\sin(t_iw_i))}
+    \end{align*}
+}
+\newpage
+\begin{table}[h]
+    \centering
+    \begin{tabular}{cc}
+        $t_i$ & $w_i$             \\ \hline
+        0.0   & 0.000000000000000 \\
+        0.2   & 0.200000000000000 \\
+        0.4   & 0.404004473397373 \\
+        0.6   & 0.626645905992322 \\
+        0.8   & 0.893219651185996 \\
+        1.0   & 1.236705986258755 \\
+        1.2   & 1.665406315361360 \\
+        1.4   & 2.060419988396295 \\
+        1.6   & 2.229474504336433 \\
+        1.8   & 2.208300083165663 \\
+        2.0   & 2.088054524845546
+    \end{tabular}
+\end{table}
+
+\vskip1cm
+
+\solution{
+(a) Since $y(t_{i+1}) = y_i + \int_{t_i}^{t_{i+1}} f(t,y(t))\,dt$, for an approximation $w_i$ of $y(t_i)$, we have
+\[ w_{i+1} = w_i + \int_{t_i}^{t_{i+1}} P(t)\,dt \]
+where $P$ is the interpolating polynomial determined by $(t_{i-1},f(t_{i-1},w_{i-1}))$ and $(t_i,f(t_i,w_i))$: a polynomial approximation of $y'(t) = f(t,y(t))$. As
+\[ P(t) = \frac{t - t_i}{t_{i-1} - t_i} \,f(t_{i-1},w_{i-1}) + \frac{t - t_{i-1}}{t_i - t_{i-1}} \,f(t_{i},w_{i}), \]
+we have
+\begin{align*}
+    \int_{t_i}^{t_{i+1}} P(t)\,dt & = \frac{f(t_{i-1},w_{i-1})}{t_{i-1} - t_i} \int_{t_i}^{t_{i+1}}(t - t_{i})\,dt + \frac{f(t_{i},w_{i})}{t_i - t_{i-1}} \int_{t_i}^{t_{i+1}}(t - t_{i-1})\,dt
+    \\ &= \frac{f(t_{i-1},w_{i-1})}{-h} \frac{h^2}2 + \frac{f(t_{i},w_{i})}{h} \frac{3h^2}2
+    \\ &= \frac{3h}2 \,f(t_{i},w_{i}) - \frac{h}2 \, f(t_{i-1},w_{i-1}).
+\end{align*}
+Thus,
+\[ w_{i+1} = w_i + \frac{3h}2 \,f(t_{i},w_{i}) - \frac{h}2 \, f(t_{i-1},w_{i-1}), \]
+which is exactly the Adams--Bashforth two--step method.
+
+\noindent(b) Simpson's rule implies $(h = t_{i+1} - t_i)$
+\[ \int_{t_{i-1}}^{t_{i+1}} f(t,y(t))\,dt \approx \frac{h}3 [f(t_{i-1},y(t_{i-1})) + 4f(t_{i},y(t_{i})) + f(t_{i+1},y(t_{i+1}))], \]
+which gives the approximation $w_i \approx y(t_i)$ where
+\[ w_{i+1} = w_{i-1} + \frac{h}3 [f(t_{i-1},w_{i-1}) + 4f(t_{i},w_i) + f(t_{i+1},w_{i+1})]. \]
+Its local truncation error at $(i+1)$-st step is
+\begin{align*}
+    \tau_{i+1}(h) &= \frac{ y(t_{i+1}) - y(t_{i-1}) }{ h } - \frac 1 3\bracket{ f(t_{i-1},y(t_{i-1})) + 4f(t_{i},y(t_{i})) + f(t_{i+1},y(t_{i+1})) } 
+\end{align*}
+for $i\ge 1$.
+}
+
+
+
+\end{document}

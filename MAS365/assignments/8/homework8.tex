@@ -1,0 +1,78 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{listings}
+\usepackage{stackrel}
+\usepackage{mathdots}
+
+\usepackage{macros-common}
+
+\allowdisplaybreaks
+
+\title{Homework 8}
+\subject{MAS365 Introduction to Numerical Analysis}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\solution{
+    (a) \begin{enumerate}[label={(\roman*)}]
+        \item $\|A\|_F\ge 0$ since it is the $1/2$-th power of a sum of squares, a nonnegative number.
+        \item $\|A\|_F = 0$ iff $\sum_{1\le i,j\le n} |a_{ij}|^2 = 0$, which is equivalent to $a_{ij}=0$ for every $i$ and $j$, i.e., $A$ is the zero matrix.
+        \item $\|\alpha A\|_F = \paren{\sum_{1\le i,j\le n} |\alpha a_{ij}|^2}^{1/2} = \paren{|\alpha|^2 \sum_{1\le i,j\le n} |a_{ij}|^2}^{1/2} = |\alpha|\|A\|_F.$
+        \item Let $A$ and $B$ be two $n\times n$ matrices. Transforming each matrix $A$ (and $B$) into an $n^2$-dimensional vector $\mathbf a$ (and $\mathbf b$), $\|A\|_F = \|\mathbf a\|_2$ (the $\ell^2$-norm) and similar results hold for $B$ and $A+B$. Consequently,
+              \[ \|A+B\|_F = \|\mathbf a+\mathbf b\|_2 \le \|\mathbf a\|_2+\|\mathbf b\|_2 = \|A\|_F + \|B\|_F \]
+              by the triangle inequality.
+
+              For a direct proof,
+              \begin{align*}
+                  \|A+B\|_F^2 & = \sum_{1\le i,j\le n} |a_{ij}+b_{ij}|^2
+                  \\ &= \sum_{1\le i,j\le n} |a_{ij}|^2+\sum_{1\le i,j\le n} |b_{ij}|^2 + 2\sum_{1\le i,j\le n} |a_{ij}b_{ij}|
+                  \\ &= \sum_{1\le i,j\le n} |a_{ij}|^2+\sum_{1\le i,j\le n} |b_{ij}|^2 + 2\sum_{1\le i,j,i',j'\le n} |a_{ij}b_{i'j'}|\delta_{ii'}\delta_{jj'}
+                  \\ &\le \sum_{1\le i,j\le n} |a_{ij}|^2+\sum_{1\le i,j\le n} |b_{ij}|^2 + 2\sum_{1\le i,j,i',j'\le n} |a_{ij}b_{i'j'}|
+                  \\ &\le \sum_{1\le i,j\le n} |a_{ij}|^2+\sum_{1\le i,j\le n} |b_{ij}|^2 + 2\paren{\sum_{1\le i,j\le n} |a_{ij}|^2}^{1/2}\paren{\sum_{1\le i,j\le n} |b_{ij}|^2}^{1/2} \tag{Cauchy--Schwarz}
+                  \\ &= (\|A\|_F + \|B\|_F)^2.
+              \end{align*}
+        \item \begin{align*}
+                  \|AB\|_F^2 & = \sum_{1\le i,j\le n} \abs{\sum_{1\le k\le n} a_{ik}b_{kj}}^2
+                  \\ &\le  \sum_{1\le i,j\le n} \paren{\sum_{1\le k\le n} |a_{ik}|^2}\paren{\sum_{1\le k'\le n} |b_{k'j}|^2} \tag{Cauchy--Schwarz}
+                  \\ &= \sum_{1\le i,j,k,k'\le n}  |a_{ik}|^2|b_{k'j}|^2
+                  \\ &= \paren{\sum_{1\le i,k\le n}  |a_{ik}|^2}\paren{\sum_{1\le k',j\le n} |b_{k'j}|^2}
+                  \\ &= \|A\|_F ^2\|B\|_F^2.
+              \end{align*}
+    \end{enumerate}
+
+    \noindent (b) When $\|\mathbf x\|_2 = 1$,
+    \begin{align*}
+        \|A\mathbf x\|_2^2 & = \sum_{i=1}^n \paren{\sum_{j=1}^n A_{ij}x_j}^2
+        \\ &\le \sum_{i=1}^n \paren{\sum_{j=1}^n |A_{ij}|^2}\paren{\sum_{j=1}^n |x_j|^2} \tag{Cauchy--Schwarz}
+        \\ &\le \sum_{i=1}^n \paren{\sum_{j=1}^n |A_{ij}|^2}\tag{$\|\mathbf x\|_2=1$}
+        \\ &= \|A\|_F^2.
+    \end{align*}
+    Therefore, $\|A\|_2 = \max_{\|\mathbf x\|_2=1} \|A\mathbf x\|_2 \le \|A\|_F.$
+}
+
+\solution{
+    (a) $\|A\|_2 = \rho(A^tA)^{1/2} = \rho(A^2)^{1/2}$ since $A=A^t$ by Theorem 5(1) in the lecture note. Here, when $\lambda$ is an eigenvalue of $A$ with corresponding eigenvector $\mathbf v$, we have $A^2\mathbf v = \lambda^2\mathbf v$ so that $A^2$ has $\lambda^2$ as an eigenvalue. By counting them, we notice that every eigenvalue of $A^2$ is of such form, considering the multiplicities. (For example, if $A$ has $\pm 3$ as eigenvalues, then $A^2$ has 9 as an eigenvalue of multiplicity 2.) Therefore,
+    \begin{align*}
+        \rho(A^2) = \max_{\lambda\text{: eigenvalue of $A^2$}} |\lambda| = \max_{\lambda\text{: eigenvalue of $A$}} |\lambda^2| = \rho(A)^2.
+    \end{align*}
+    Consequently, we have $\|A\|_2 = \rho(A)$.
+
+    \noindent(b) First, $\rho(A) \le \|A\|$, Theorem 5(2) in the lecture note, implies the second inequality. 
+    
+    Now, observe that when $\lambda$ is an eigenvalue of $A$ with corresponding eigenvector $\mathbf v$, we have $A^{-1}\mathbf v = \lambda^{-1}A^{-1}\lambda\mathbf v = \lambda^{-1}A^{-1}A\mathbf v = \lambda^{-1}\mathbf v$ so that $A^{-1}$ has $\lambda^{-1}$ as an eigenvalue. Note that the first inequality is equivalent to that $\abs{\lambda}^{-1} \le \|A^{-1}\|$ for any eigenvalue $\lambda$ of $A$ by the observation above, which is again equivalent to that $\rho(A^{-1}) \le \|A^{-1}\|$. Therefore, Theorem 5(2) in the lecture note again proves this.
+}
+
+
+\end{document}

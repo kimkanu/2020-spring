@@ -1,0 +1,165 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{listings}
+\usepackage{stackrel}
+\usepackage{mathdots}
+
+\usepackage{macros-common}
+
+\allowdisplaybreaks
+
+\title{Homework 4}
+\subject{MAS365 Introduction to Numerical Analysis}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\solution{
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\alph*)},topsep=0pt]
+        \item Note that 1 mph is $5280/3600 = 22/15$ feet per seconds. So, we have (every quantity is in feets and seconds)
+              \begin{align*}
+                  d(0) = 0,\quad d'(0) = 418/3,\quad d(0.4) = 55.5,\quad d'(0.4) = 2024/15.
+              \end{align*}
+              Then, the Hermite polynomial of the distance function is as follows:
+              \begin{align*}
+                  H_{1,1}(t)        & = \frac{25}4(3-5t)t^2,                                               \\
+                  \hat H_{1,0}(t)   & = \frac{25}4 \,t\paren{t-\frac25}^2                                  \\
+                  \hat H_{1,1}(t)   & = \frac{25}4 \,t^2\paren{t-\frac25},                                 \\
+                  \therefore H_3(t) & = d(0.4)H_{1,1}(t) + d'(0) \hat H_{1,0}(t) + d'(0.4) \hat H_{1,1}(t)
+                  \\ &= \frac{111}2\cdot \frac{25}4(3-5t)t^2 + \frac{418}3\cdot  \frac{25}4 \,t\paren{t-\frac25}^2 + \frac{2024}{15}\cdot\frac{25}4 \,t^2\paren{t-\frac25}
+                  \\ &= \frac{418}3\,t + \frac{53}8\,t^2 - \frac{485}{24}\,t^3.
+              \end{align*}
+        \item $H_3'(0.2) = \frac{16747}{120}\,\text{feet/s} = \frac{16747}{176}\,\text{mph}\approx 95.1534\,\text{mph}$.
+        \item The maximum of the approximated velocity $H_3'$ is achieved when $t=53/485$ (seconds) with the value $H_3'(53/485) =\frac{1630267}{11640}\,\text{feet/s} =\frac{1630267}{17072}\,\text{mph}\approx 95.4936\,\text{mph}$.
+    \end{enumerate}
+}
+
+\solution{
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\alph*)},topsep=0pt]
+        \item We have the following four equations:
+              \begin{align*}
+                  S_0(2)   & = 1+B-D=1,           \\
+                  S_1(3)   & = 1+b-\frac34+d=0,   \\
+                  S_0'(2)  & =B-3D=S_1'(2) = b,   \\
+                  S_1''(3) & =-\frac 32 + 6d = 0. \\
+              \end{align*}
+              $\therefore d = 1/4$, $b = -1/2$, $B=D=1/4$.
+
+        \item $s_0(1)=1+B=s_1(1)=1$, thus $B=0$. $s_0'(1) = -2=s_1'(1)=b$ implies $b=-2$. So $f'(0) = s_0'(0) = 0$ and $f'(2)=s_1'(2) = 11$.
+    \end{enumerate}
+}
+
+\solution{
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\alph*)},topsep=0pt]
+        \item Let $M\coloneqq \max_{a\le x\le b} f'(x)$. For some $\xi_i\in (x_i, x_{i+1})$ satisfying $f'(\xi_i) = \paren[\big]{f(x_{i+1})-f(x_i)}/(x_{i+1}-x_i)$, \begin{align*}
+                   & \max_{a\le x\le b} \abs{f(x) - F(x)}
+                  \\ &= \max_{i=0,\cdots,n-1} \max_{x_i\le x\le x_{i+1}} \abs{f(x) - F(x)}
+                  \\ &= \max_{i=0,\cdots,n-1} \max_{x_i\le x\le x_{i+1}} \abs{\int_{x_i}^x \paren[\big]{f'(t)-F'(t)}\,dt}
+                  \\ &= \max_{i=0,\cdots,n-1} \max_{x_i\le x\le x_{i+1}} \abs{\int_{x_i}^x \paren{f'(t)-\frac{f(x_{i+1})-f(x_i)}{x_{i+1}-x_i}}\,dt}
+                  \\ &= \max_{i=0,\cdots,n-1} \max_{x_i\le x\le x_{i+1}} \abs{\int_{x_i}^x \paren{f'(t)-f'(\xi_i)}\,dt}
+                  \\ &\le \max_{i=0,\cdots,n-1} \max_{x_i\le x\le x_{i+1}} {\int_{x_i}^x \paren[\big]{|f'(t)|+|f'(\xi_i)|}\,dt}
+                  \\ &\le \max_{i=0,\cdots,n-1} \max_{x_i\le x\le x_{i+1}} 2M(x-x_i)
+                  \\ &\le 2M\max_{i=0,\cdots,n-1} (x_{i+1}-x_i).
+              \end{align*}
+        \item \begin{align*}
+                  F(x)=\begin{cases}
+                      e^0 + \dfrac{e^{0.1} - e^0}{0.05 - 0}\, x = 1 + 20(e^{0.1}-1)x, & \text{ if } 0\le x\le 0.05, \\[10pt]
+                      e^{0.1} + \dfrac{e^{0.2} - e^{0.1}}{0.10 - 0.05}\, (x-0.05)
+                      \\ \quad =( 2e^{0.1}- e^{0.2}) + 20(e^{0.2} - e^{0.1})x, & \text{ if } 0.05\le x\le 0.1
+                  \end{cases}.
+              \end{align*}
+              Then $\int_0^{0.1}F(x)\,dx = \frac12(e^0+e^{0.1}+e^{0.1}+e^{0.2})\cdot 0.05 = (1+2e^{0.1}+e^{0.2})/40\approx 0.1107936$. Note the actual value is $\int_0^{0.1} e^{2x}\,dx = \frac12 (e^{0.2}-1)\approx 0.1107014$. The approximated integral is slightly larger, because the given function $f$ is convex. The absolute error is about $9.22\times 10^{-5}$.
+        \item $M=\max_{0\le x\le 0.1}f'(x) = 2e^{0.2}\approx 2.4428055$. \begin{align*}
+                  \max_{0\le x\le 0.1} |f(x)-F(x)|                  & \le 2M\cdot \max\set{0.05,0.05} = \frac15 e^{0.2}. \\
+                  \abs{\int_0^{0.1} f(x)\,dx-\int_0^{0.1} F(x)\,dx} & = \int_0^{0.1} |f(x)-F(x)|\,dx
+                  \\ &\le 0.1\max_{0\le x\le 0.1} |f(x)-F(x)|
+                  \\ &\le \frac{e^{0.2}}{50}\approx 0.0244281.
+              \end{align*}
+    \end{enumerate}
+}
+
+\solution{
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\alph*)},topsep=0pt]
+        \item \begin{align*}
+                  s(x) = \begin{cases}
+                      1 + ax+ bx^2 + cx^3,                         & \text{ if } 0\le x\le .05  \\
+                      e^{0.1} + A(x-.05)+ B(x-.05)^2 + C(x-.05)^3, & \text{ if } .05\le x\le .1
+                  \end{cases}.
+              \end{align*}
+              We have the following conditions:
+              \begin{itemize}
+                  \item $s(0.05)= 1+0.05a+(0.05)^2b+(0.05)^3c = e^{0.1}$,
+                  \item $s(0.1)= e^{0.1}+0.05A+(0.05)^2B+(0.05)^3C = e^{0.2}$,
+                  \item $s'(0.05) = a+2\cdot 0.05\, b+3(0.05)^2c = A$,
+                  \item $s''(0.05) = 2b+6\cdot 0.05\,c = 2B$,
+                  \item $s'(0) = a = f'(0) = 2$,
+                  \item $s'(0.1) = A + 2B\cdot 0.05 + 3C\cdot 0.05^2 = f'(0.1) = 2e^{0.2}$.
+              \end{itemize}
+              These yield the following matrix representation:
+              \begin{align*}
+                  \begin{pmatrix}
+                      0.05 & 0.05^2      & 0.05^3        & 0    & 0           & 0             \\
+                      0    & 0           & 0             & 0.05 & 0.05^2      & 0.05^3        \\
+                      1    & 2\cdot 0.05 & 3\cdot 0.05^2 & -1   & 0           & 0             \\
+                      0    & 2           & 6\cdot 0.05   & 0    & -2          & 0             \\
+                      1    & 0           & 0             & 0    & 0           & 0             \\
+                      0    & 0           & 0             & 1    & 2\cdot 0.05 & 3\cdot 0.05^2
+                  \end{pmatrix}\begin{pmatrix}
+                      a \\b\\c\\A\\B\\C
+                  \end{pmatrix}=\begin{pmatrix}
+                      e^{0.1}-1       \\
+                      e^{0.2}-e^{0.1} \\
+                      0               \\
+                      0               \\
+                      2               \\
+                      2e^{0.2}
+                  \end{pmatrix}
+              \end{align*}
+              so that
+              \begin{align*}
+                  \begin{pmatrix}
+                      a \\b\\c\\A\\B\\C
+                  \end{pmatrix}\approx\begin{pmatrix}
+                      2.0000000 \\
+                      1.9983018 \\
+                      1.4013081 \\
+                      2.2103399 \\
+                      2.2084980 \\
+                      1.5487625 \\
+                  \end{pmatrix}.
+              \end{align*}
+              Therefore,
+              \begin{align*}
+                  \int_0^{0.1}s(x)\,dx & = \int_0^{0.05} \paren[\big]{(1+ax+bx^2+cx^3)+(e^{0.1}+Ax+Bx^2+Cx^3)}\,dx
+                  \\ &\approx 0.110701363708553.
+              \end{align*}
+              The true value $\int_0^{0.1}f(x)\,dx\approx 0.110701379080085$ is very close to the approximated integral. The absolute error is about $1.5371532\times 10^{-8}$.
+        \item Since $M=\max_{0\le x\le 0.1}f^{(4)}(x) = 16e^{0.2}$ so that
+        \begin{align*}
+            \max_{0\le x\le 0.1} |f(x)-s(x)| &\le \frac{5\cdot 16e^{0.2}}{384}\cdot \max\set{0.05, 0.05}^4 
+            \\&= \frac{5e^{0.2}\cdot 0.05^4}{24}\approx 1.590368\times 10^{-6} ,\\
+            \abs{\int_0^{0.1} f(x)\,dx-\int_0^{0.1} s(x)\,dx} & = \int_0^{0.1} |f(x)-s(x)|\,dx
+                  \\ &\le 0.1\max_{0\le x\le 0.1} |f(x)-s(x)|
+                  \\ &\le \frac{e^{0.2}\cdot 0.05^4}{48}\approx 1.590368\times 10^{-7}.
+        \end{align*}
+    \end{enumerate}
+}
+
+
+
+\end{document}

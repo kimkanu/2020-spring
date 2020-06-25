@@ -1,0 +1,233 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{listings}
+\usepackage{stackrel}
+\usepackage{mathdots}
+
+\usepackage{macros-common}
+
+\allowdisplaybreaks
+
+\title{Homework 3}
+\subject{MAS365 Introduction to Numerical Analysis}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\solution{
+    Using the Theorem 3 in the lecture note for Chapter 3 could be a way to obtain a bound for the absolute error. Note $f(x) = x^{-2}$ is smooth on $[1,2]$, so, for the Lagrange interpolating polynomial $P$, we have
+    \begin{align*}
+        |f(x) - P(x)| & = \abs{ \frac{f^{(3)}(\xi(x)) }{3!} \,(x-1)\paren{x - \frac {11}8}(x-2)}
+        \\ &= \abs{ -4\,\xi(x)^{-5}\,(x-1)\paren{x - \frac {11}8}(x-2)}
+        \\ &\le 4 \cdot 1^{-5}\cdot \frac 9{128} = \frac 9 {32} \approx 0.28125
+    \end{align*}
+    because $\xi(x) \in [1,2]$ and $(x-1)(x-11/8)(x-2)$ has two extrema on $[1,2]$, which are at $x=7/4$ and $x=7/6$, where the former one gives the maximum absolute value of $(x-1)(x-11/8)(x-2)$ on $[1,2]$.
+
+    (Idea for an alternative solution) We also can directly calculate the error term. Since $(f(x) - P(x))' = 0$ is a quartic equation, which can be always solved with an exact solution using radicals, the maximum of $|f(x)-P(x)|$ also can be calculated exactly, though it is difficult for a human. The maximum absolute error is approximately $0.041300$, which is quite better than the answer above.
+}
+
+\solution{
+Suppose $x\ne x_0$, otherwise we have $f(x_0)-P_n(x_0) = 0$. Denote $R_n(x) = f(x) - P_n(x)$, and let
+\[ g(t) = R_n(t) - R_n(x)\,\frac{(t-x_0)^{n+1}}{(x-x_0)^{n+1}}. \]
+I will use somewhat different generalization of the Rolle's theorem than the Theorem 1.10 in the textbook:
+
+Suppose $f\in C^n[a,b]$ and $f^{(n+1)}$ exists at $x=a$, with $f(a)=\cdots=f^{(n)}(a)=0$ and $f(b)=0.$ Then there is a number $c\in (a,b)$ with $f^{(n+1)}(c)=0$.
+
+This can be proved easily: find $\xi_1\in (a,b)$ satisfying $f'(\xi_1)=0$ using Rolle's to $f$, find $\xi_2\in (a,\xi_1)$ satisfying $f''(\xi_1)=0$ using Rolle's to $f'$, and so on.
+
+Now the problem became easy: since $$g^{(j)}(t) = R_n^{(j)}(t) - (n+1)\cdots (n+2-j)\frac{(t-x_0)^{n+1-j}}{(x-x_0)^{n+1}}$$ so that
+$$g^{(j)}(x_0) = f^{(j)}(x_0) - P_n^{(j)}(x_0) = 0.$$
+Also, $g(x)=0$. Thus, applying the generalization of the Rolle's theorem above, we have a constant $c\eqqcolon \xi(x)$ between $x_0$ and $x$, depending only on $x$. Since both $x_0$ and $x$ are on $[a,b]$, we have $\xi(x) \in (a,b)$.
+}
+
+\solution{
+    See the code below for the implementation.
+    \begin{enumerate}[label={(\alph*)},topsep=0pt]
+        \item $\sqrt 3 =f(0.5)\approx 1.70833333.$
+        \item $\sqrt 3 =f(3)\approx 1.73138614.$
+    \end{enumerate}
+}
+
+\begin{lstlisting}[language=Matlab,basicstyle=\footnotesize\ttfamily]
+% Neville's Method
+
+% Define f(x)
+f = @(x) 3^x;          % for (a)
+% f = @(x) sqrt(x);    % for (b)
+
+X = [-2, -1, 0, 1, 2];
+N = length(X);
+
+% Q{i, j} = Q_{i - 1, j - 1}
+Q = cell(N, N);
+
+for i = 1:N
+    Q{i, 1} = [f(X(i))];
+end
+
+% Calculating Q{i, j}
+for j = 2:N
+    for i = j:N
+        % (x - x_{i-j})Q_{i, j-1}
+        first_term = sum_poly(    ...
+            [Q{i, j-1} 0],        ...
+            -X(i-j+1) * Q{i, j-1} ...
+        );
+        % -(x - x_{i})Q_{i-1, j-1}
+        second_term = sum_poly(   ...
+            -1 * [Q{i-1, j-1} 0], ...
+            X(i) * Q{i-1, j-1}    ...
+        );
+        
+        Q{i, j} =                               ...
+            sum_poly(first_term, second_term) / ...
+            (X(i) - X(i-j+1));
+    end
+end
+
+% Evaluate the polynomial
+x = 0.5;    % for (a)
+% x = 3;    % for (b)
+fprintf('f(%f) = %.8f\n', x, polyval(Q{N, N}, x))
+
+% x * P = [P 0]
+% a * P = a * P
+% P + Q
+function s = sum_poly(a, b)
+    N = max(length(a), length(b));
+    pa = [zeros(1, N - length(a)) a];
+    pb = [zeros(1, N - length(b)) b];
+    s = pa + pb;
+    return
+end
+\end{lstlisting}
+
+\solution{
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\alph*)},topsep=0pt]
+        \item Note $P_{1,2}=Q_{2,1}$ and $P_{2} = Q_{2,0}$. With $x=0.5$,
+              \begin{align*}
+                  \frac{27}7 = Q_{2,2} & =\frac{(x-x_0)Q_{2,1} - (x-x_2)Q_{1,1}}{x_2 - x_0} = \frac57\,Q_{2,1}+1,\qquad Q_{2,1}=4;        \\
+                  4 = Q_{2,1}          & =\frac{(x-x_1)Q_{2,0} - (x-x_2)Q_{1,0}}{x_2 - x_1} = \frac{Q_{2,0} +5.6 }{3};\qquad Q_{2,0}=6.4.
+              \end{align*}
+        \item \begin{align*}
+                  P_{0,1,2}(1.5)   & = Q_{2,2}(1.5) = \frac{(x-x_0)Q_{2,1}(x) - (x - x_2)Q_{1,1}(x)}{x_2-x_0}\bigg|_{x=1.5} =3.25; \\
+                  P_{0,1,2,3}(1.5) & = Q_{3,3}(1.5) = \frac{(x-x_0)Q_{3,2}(x) - (x - x_3)Q_{2,2}(x)}{x_3-x_0}\bigg|_{x=1.5}=3.625.
+              \end{align*}
+        \item[(b: alternative way)] Since $P_{1,2,3}(x)$ is a quadratic polynomial with $P_{1,2,3}(1)=P_{1,2}(1)=2$, $P_{1,2,3}(1.5)=4$, and $P_{1,2,3}(2)=P_{1,2}(2)=5$, we have $P_{1,2,3}(x) = -2 x^2 + 9 x - 5$, having $P_{0,1,2,3}(3) = 4$. So the graph of $P_{0,1,2,3}$ passes $(0,1),(1,2),(2,5)$, and $(3,4)$, we have $$P_{0,1,2,3}(x) = -x^3 + 4 x^2 - 2 x + 1.$$
+              Thus $P_{0,1,2,3}(1.5)=3.625$.
+    \end{enumerate}
+}
+
+\solution{
+Let $P$ be a polynomial of least degree, and show $P = H_{2n+1}$. In this way, we can simultaneously show that $H_{2n+1}$ is such a polynomial of \textit{least} degree and is actually unique. Note $H_{2n+1}$ is a polynomial agreeing with $f$ and $f'$ at given points, though we do not yet know that $H_{2n+1}$ is of least degree. Thus, by the minimality of the degree of $P$, we have $\deg P \le \deg H_{2n+1}$. Consequently, $\deg(H_{2n+1} - P) = \deg D \le \deg H_{2n+1}\le 2n+1$. Then, $\deg D \le 2n$. However, by the Rolle's theorem, we have $D'(\xi_i)=0$ with some $x_i<\xi_i<x_{i+1}$ ($i=0,\dots,n-1$) so that $D'(x)=0$ for $x=x_0,\dots,x_n,\xi_0,\dots,\xi_{n-1}$. According to the fundamental theorem of algebra, $D'\equiv 0$. Hence $D$ is a constant, which should be 0, because, say, $D(x_0)=0$.
+
+
+(Alternative solution) $D(x_i) = D'(x_i) = 0$ for $i=0,\dots,n$. Letting $D(x)=\sum_{i=0}^{2n+1} d_ix^i$ ($d_i$ could be zero),
+\begin{align*}
+    d_0+d_1 x_0+\cdots + d_{2n+1}x_0^{2n+1} =0, & \quad d_1+2d_2 x_0+\cdots + (2n+1)d_{2n+1}x_0^{2n} =0, \\
+    \vdots\mkern150mu                           & \mkern150mu\vdots                                      \\
+    d_0+d_1 x_0+\cdots + d_{2n+1}x_n^{2n+1} =0, & \quad d_1+2d_2 x_n+\cdots + (2n+1)d_{2n+1}x_n^{2n} =0, \\
+\end{align*}
+i.e.,
+\begin{align*}
+    \begin{pmatrix}
+        1      & x_0    & \cdots & x_0^{2n+1}     \\
+        \vdots & \vdots & \ddots & \vdots         \\
+        1      & x_n    & \cdots & x_n^{2n+1}     \\
+        0      & 1      & \cdots & (2n+1)x_0^{2n} \\
+        \vdots & \vdots & \ddots & \vdots         \\
+        0      & 1      & \cdots & (2n+1)x_n^{2n} \\
+    \end{pmatrix}
+    \begin{pmatrix}
+        d_0 \\\vdots\\d_n\\d_{n+1}\\\vdots\\d_{2n+1}\\
+    \end{pmatrix}
+    = \mathbf 0.
+\end{align*}
+Redefine $n$ to be $n-1$ in the formulae above for the sake of simplicity. The determinant of the $2n\times 2n$ square matrix on the left side can be calculated by the induction on the number $\ell$ of rows with leading zero in the following form of matrix determinant: ($0\le \ell\le m\coloneqq 2n-\ell$)
+\[ \begin{vmatrix}
+        1      & x_0     & \cdots & x_0^{2n-1}               \\
+        \vdots & \vdots  & \ddots & \vdots                   \\
+        1      & x_{m-1} & \cdots & x_{m-1}^{2n-1}           \\
+        0      & 1       & \cdots & (2n-1) x_0^{2n-2}        \\
+        \vdots & \vdots  & \ddots & \vdots                   \\
+        0      & 1       & \cdots & (2n-1) x_{\ell-1}^{2n-2} \\
+    \end{vmatrix} =  (-1)^{\ell(\ell-1)/2} \prod_{0\le i<j\le m-1} (x_j-x_i)^{\alpha_i\alpha_j} \]
+where $\alpha_j=2$ if $j< \ell$, and $\alpha_j=1$ otherwise.
+When $\ell=0$, we have nothing to do due to the Vandermonde determinant. Observe that expanding the determinant along $m$-th row, the other parts does not depend on $x_{m-1}$. As an induction step (assuming $0\le\ell<n$ so $\alpha_{m-1}=1$),
+\begin{align*}
+    \frac{\partial}{\partial x_{m-1}} & \begin{vmatrix}
+        1      & x_0     & \cdots & x_0^{2n-1}               \\
+        \vdots & \vdots  & \ddots & \vdots                   \\
+        1      & x_{m-1} & \cdots & x_{m-1}^{2n-1}           \\
+        0      & 1       & \cdots & (2n-1) x_0^{2n-2}        \\
+        \vdots & \vdots  & \ddots & \vdots                   \\
+        0      & 1       & \cdots & (2n-1) x_{\ell-1}^{2n-2} \\
+    \end{vmatrix}
+    \\&= \begin{vmatrix}
+        1      & x_0     & \cdots & x_0^{2n-1}               \\
+        \vdots & \vdots  & \ddots & \vdots                   \\
+        1      & x_{m-2} & \cdots & x_{m-2}^{2n-1}           \\
+        0      & 1       & \cdots & (2n-1) x_{m-1}^{2n-2}    \\
+        0      & 1       & \cdots & (2n-1) x_0^{2n-2}        \\
+        \vdots & \vdots  & \ddots & \vdots                   \\
+        0      & 1       & \cdots & (2n-1) x_{\ell-1}^{2n-2} \\
+    \end{vmatrix}
+    \\&= (-1)^{\ell(\ell-1)/2} \prod_{i<j<m-1} (x_j-x_i)^{\alpha_i\alpha_j}\cdot \frac{\partial}{\partial x_{m-1}}\prod_{i=0}^{m-2} (x_{m-1}-x_i)^{\alpha_i}.
+\end{align*}
+By replacing $x_{m-1}$ by $x_{\ell}$, we have
+\begin{align*}
+     & \begin{vmatrix}
+        1      & x_0     & \cdots & x_0^{2n-1}               \\
+        \vdots & \vdots  & \ddots & \vdots                   \\
+        1      & x_{m-2} & \cdots & x_{m-2}^{2n-1}           \\
+        0      & 1       & \cdots & (2n-1) x_\ell^{2n-2}     \\
+        0      & 1       & \cdots & (2n-1) x_0^{2n-2}        \\
+        \vdots & \vdots  & \ddots & \vdots                   \\
+        0      & 1       & \cdots & (2n-1) x_{\ell-1}^{2n-2} \\
+    \end{vmatrix}
+    \\&= (-1)^{\ell(\ell-1)/2} \prod_{i<j<m-1} (x_j-x_i)^{\alpha_i\alpha_j}\cdot \frac{\partial}{\partial x_{m-1}}\prod_{i=0}^{m-2} (x_{m-1}-x_i)^{\alpha_i}\bigg|_{x_{m-1} = x_\ell}
+    \\&= (-1)^{\ell(\ell-1)/2} \prod_{i<j<m-1} (x_j-x_i)^{\alpha_i\alpha_j}\cdot \paren{ \sum_{k=0}^{m-2} \alpha_k (x_{m-1}-x_k)^{\alpha_i-1} \prod_{\substack{i=0\\i\ne k}}^{m-2} (x_{m-1}-x_i)^{\alpha_i}\bigg|_{x_{m-1} = x_\ell} } \tag{the summand is zero when $k\ne \ell$}
+    \\&= (-1)^{\ell(\ell-1)/2} \prod_{i<j<m-1} (x_j-x_i)^{\alpha_i\alpha_j}\prod_{\substack{i=0\\i\ne \ell }}^{m-2} (x_\ell-x_i)^{\alpha_i}\tag{$\alpha_\ell=1$}
+    \\&= (-1)^{\ell(\ell-1)/2} \prod_{\substack{i<j<m-1 \\ i\ne \ell\ne j}} (x_j-x_i)^{\alpha_i\alpha_j}\prod_{\substack{i<\ell}} (x_\ell-x_i)^{\alpha_i}\prod_{\substack{j>\ell}} (x_j-x_\ell)^{\alpha_j}\prod_{\substack{i=0\\i\ne \ell }}^{m-2} (x_\ell-x_i)^{\alpha_i}
+    \\&= (-1)^{\ell(\ell-1)/2} \prod_{\substack{i<j<m-1 \\ i\ne \ell\ne j}} (x_j-x_i)^{\alpha_i\alpha_j}\paren{\prod_{\substack{i<\ell}} (x_\ell-x_i)^{\alpha_i}\prod_{\substack{j>\ell}} (x_j-x_\ell)^{\alpha_j}}^2 \cdot (-1)^{m-1-(\ell+1)}
+    \\&= (-1)^{\ell(\ell-1)/2} \prod_{\substack{i<j<m-1 \\ i\ne \ell\ne j}} (x_j-x_i)^{\alpha_i\alpha_j}\prod_{\substack{i<j\\i=\ell\text{ or }j=\ell\\ \alpha =\alpha_j\text{ if }i=\ell;\ \alpha_i\text{ o/w}}} (x_j-x_i)^{2\alpha}
+    \\&= (-1)^{\ell(\ell-1)/2} \prod_{\substack{i<j<m-1}} (x_j-x_i)^{\tilde\alpha_i\tilde\alpha_j}
+\end{align*}
+where $\tilde \alpha_i = \alpha_i$ if $i\ne \ell$ and $\tilde\alpha_\ell = 2$. (Note that $m-1-(\ell+1) \equiv 0\pmod 2$.) Therefore,
+\begin{align*}
+     & \begin{vmatrix}
+        1      & x_0     & \cdots & x_0^{2n-1}               \\
+        \vdots & \vdots  & \ddots & \vdots                   \\
+        1      & x_{m-2} & \cdots & x_{m-2}^{2n-1}           \\
+        0      & 1       & \cdots & (2n-1) x_0^{2n-2}        \\
+        \vdots & \vdots  & \ddots & \vdots                   \\
+        0      & 1       & \cdots & (2n-1) x_{\ell-1}^{2n-2} \\
+        0      & 1       & \cdots & (2n-1) x_\ell^{2n-2}     \\
+    \end{vmatrix}
+    \\&= (-1)^{\ell} \begin{vmatrix}
+        1      & x_0     & \cdots & x_0^{2n-1}               \\
+        \vdots & \vdots  & \ddots & \vdots                   \\
+        1      & x_{m-2} & \cdots & x_{m-2}^{2n-1}           \\
+        0      & 1       & \cdots & (2n-1) x_\ell^{2n-2}     \\
+        0      & 1       & \cdots & (2n-1) x_0^{2n-2}        \\
+        \vdots & \vdots  & \ddots & \vdots                   \\
+        0      & 1       & \cdots & (2n-1) x_{\ell-1}^{2n-2} \\
+    \end{vmatrix}
+    \\&= (-1)^{\ell}(-1)^{\ell(\ell-1)/2} \prod_{\substack{i<j<m-1}} (x_j-x_i)^{\tilde\alpha_i\tilde\alpha_j}
+    \\&=(-1)^{(\ell+1)\ell/2} \prod_{\substack{i<j\le m-2}} (x_j-x_i)^{\tilde\alpha_i\tilde\alpha_j}
+\end{align*}
+as desired. Thus, the determinant is zero iff there are duplicated points, but the problem asserted that all $x_i$'s are distinct. So the linear equation above has only the trivial solution.
+}
+\end{document}
