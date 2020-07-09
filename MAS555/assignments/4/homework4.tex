@@ -1,0 +1,110 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{stackrel}
+\allowdisplaybreaks
+
+\usepackage{macros-common}
+\usepackage{macros-prob}
+
+\title{Homework 4}
+\subject{MAS555 Advanced Statistics}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\solution[7.10]{
+    (a) Note that the pdf of the common distribution of $X_1,\dots,X_n$ is
+    \[ \pdf_{X_i}(x|\alpha,\beta) = \alpha \beta^{-\alpha} x^{\alpha-1} \mathbf 1_{x\ge 0} \mathbf 1_{x\le\beta} \]
+    so that the joint pdf is
+    \begin{align*}
+        & \pdf_{X_1,\dots,X_n}(x_1,\dots,x_n | \alpha,\beta)
+        \\ &= \alpha^n \beta^{-n\alpha} \paren[\Big]{\prod_{i=1}^n x_i}^{\alpha-1} \mathbf 1_{\min_i x_i \ge 0} \mathbf 1_{\max_i x_i \le \beta}
+        \\ &= \exp\bracket{ (\alpha-1)\sum_{i=1}^n \log x_i + \log \mathbf 1_{\beta \ge \max_i x_i} + n\log\alpha - n\alpha\log\beta } \cdot \mathbf 1_{\min x_i \ge 0}.
+    \end{align*}
+    Thus, by the factorization theorem, for $X=(X_1,\dots,X_n)$,
+    \[ T(X) = \binom{\sum_{i=1}^n \log X_i}{\max_{i=1,\dots,n} X_i} \]
+    is a two-dimensional sufficient statistic for $(\alpha,\beta)$.
+
+    \noindent(b) To maximize the likelihood $\ell(\alpha,\beta) = \pdf_{X_1,\dots,X_n}(x_1,\dots,x_n | \alpha,\beta)$, the exponent in the pdf should be maximized:
+    \[ \text{maximize}\quad (\alpha-1)\sum_{i=1}^n \log x_i + \log \mathbf 1_{\beta \ge \max_i x_i} + n\log\alpha - n\alpha\log\beta \]
+    under the assumption that $x_i\ge 0$ for any $i$. Since the likelihood is zero unless $\beta\ge\max_i x_i$ and since $- n\alpha\log\beta$ is decreasing in $\beta$, the MLE of $\beta$ is obtained exactly at $\beta = \max_i x_i.$ Thus, $\hat\beta_{\text{MLE}} = X_{(1)} = \max_{1\le i\le n} X_i $. Putting this into the likelihood, when $x_i\ge 0$ for any $i$,
+    \[ \frac{\partial}{\partial\alpha}\log \ell(\alpha,\hat\beta_{\text{MLE}}) = \sum_{i=1}^n \log x_i + \frac n \alpha - n\log\hat\beta_{\text{MLE}} = 0, \]
+    i.e., $\hat\alpha_{\text{MLE}} = \paren{\log\hat\beta_{\text{MLE}} - \frac 1 n \sum_{i=1}^n \log X_i}^{-1} = \paren{\log X_{(1)} - \frac 1 n \sum_{i=1}^n \log X_i}^{-1}.$
+
+    \noindent(c) With the given data, we have $x_{(1)} = 25.0$ and $\sum \log x_i = 43.95\cdots$. Therefore, with $n=14$,
+    \[ \hat\beta_{\text{MLE}} = 25.0, \qquad \hat\alpha_{\text{MLE}} = (\log 25.0 - 43.95\cdots/14)^{-1} = 12.6. \]
+}
+
+\solution[7.13]{
+    The joint pdf of $X_1,\dots,X_n$ is
+    \[ \pdf_{X_1,\dots,X_n}(x_1,\dots,x_n|\theta) = \exp\bracket{- \sum_{i=1}^n |\theta - x_i| - n\log 2}. \]
+    Thus, the MLE of $\theta$ is the minimizer of $\sum_{i=1}^n |\theta - x_i|$. When $n$ is odd, we have $\hat\theta_{\text{MLE}} = X_{(\frac{n+1}2)}$; and when $n$ is even, any value in the interval $[X_{(\frac n2)}, X_{(\frac n2 + 1)}]$ is an MLE of $\theta$.
+
+}
+
+\solution[7.52]{
+    (a) For a iid $\text{Poisson}(\lambda)$ random sample $X = (X_1,\dots,X_n)$, $T(X) = \sum_{i=1}^n X_i$ is a CSS for $\lambda$. Actually, the joint pdf of $X_1,\dots,X_n$ at $x=(x_1,\dots,x_n)$ is
+    \[ \exp\bracket{ T(x) \log \lambda - n\lambda }\prod_{i=1}^n x_i! \]
+    so that $T(X)$ is sufficient, and it is also complete since the above is a full-rank exponential family with the natural parameter $\eta = \log\lambda$. Since $\bar X$ is an unbiased estimator for $\lambda = \E X = \E \bar X$, by Lehmann--Scheff\'e, $\bar X$ is the UMVUE for $\lambda$.
+}
+
+\solution[7.58]{
+    (a) The joint pdf of a iid random sample $X_1,\dots,X_n$ from the given pdf is
+    \[ \pdf_{X_1,\dots,X_n}(x_1,\dots,x_n|\theta) = \paren{\frac\theta 2}^{\sum_i |x_i|} (1-\theta)^{n-\sum_i |x_i|} \]
+
+    \noindent(b) The expected value of $T(X)$ is
+    \[ \sum_{x=-1,0,1} T(x) f(x|\theta) = 2\cdot \frac{\theta}2 = \theta. \]
+    Hence $T(X)$ is an unbiased estimator of $\theta$.
+
+    \noindent(c) Since $f(x|\theta)$ is a function of $\theta$ and $|x|$, by the factorization theorem, $|X|$ is a sufficient statistic of $\theta$. Thus, the Rao--Blackwellization of $T(X)$ conditioned on $|X|$ gives a (probably) better unbiased estimator:
+    \[ T_1(x) = \E\bracket[\big]{T(X) \,\big|\, |X| = |x|} = \begin{cases}
+        0, & x=0 \\
+        1, & |x|=1
+    \end{cases}. \]
+    $T_1$ is actually better than $T$ because $\E T_1(X) = \E T(X) = \theta$, and the variance of $T(X)$ is
+    \[ \Var T(X) = \sum_{x=-1,0,1} T(x)^2 f(x|\theta) - (\E T(X))^2 = 2\theta - \theta^2 \]
+    but the variance of $T_1(X)$ is
+    \[ \Var T_1(X) = \sum_{x=-1,0,1} T_1(x)^2 f(x|\theta) - (\E T_1(X))^2 = \theta - \theta^2 \le 2\theta - \theta^2. \]
+}
+
+\solution[7.62]{
+    (a) The squared error loss is the sum of the variance and the square of the bias. Therefore,
+    \begin{align*}
+        R(\theta,\delta) &= \Var \delta(X) + [\operatorname{Bias}\delta(X)]^2 
+        \\ &= a^2\Var (\bar X) + (b+a\E \bar X - \theta)^2 
+        \\ &= a^2\frac{\sigma^2}n + (b-(1-a)\theta)^2. 
+    \end{align*}
+
+    \noindent(b) The posterior distribution is
+    \begin{align*}
+        p(\theta|x) &\propto \exp\bracket{-\frac 12 \sum_{i=1}^n \paren{x_i - \theta\over \sigma}^2 } \exp\bracket{ -\frac 12 \paren{\theta - \mu\over \tau}^2 }
+        \\ &= \exp\bracket{ -\frac 12 \paren{ \theta^2 \paren{ \frac{n}{\sigma^2} + \frac{1}{\tau^2} } - 2\theta \paren{\frac{\sum_{i=1}^n x_i}{\sigma^2} + \frac\mu{\tau^2}} } }
+        \\ &= \exp\bracket{ -\frac 12 \paren{ \theta^2 \eta^{-1}\tau^{-2} - 2\theta \paren{\frac{n\bar x}{\sigma^2} + \frac\mu{\tau^2}} } },
+    \end{align*}
+    which is a pdf of
+    \[ \mathrm n \paren{ \eta\tau^2 \paren{ \frac{n\bar x}{\sigma^2} + \frac \mu{\tau^2} },\  \mu\tau^2 }.\]
+    Thus, the Bayes estimator is
+    \[ \delta^\pi = \eta\tau^2 \paren{ \frac{n\bar x}{\sigma^2} + \frac \mu{\tau^2} } = \frac{n\tau^2 \bar x + \sigma^2 \mu}{n\tau^2 + \sigma^2} = (1-\eta)\bar x + \eta\mu, \]
+    and the risk for the Bayes estimator is $(1-\eta)^2\frac{\sigma^2}n + \eta^2 (\theta-\mu)^2$, which can be obtained by putting $a=1-\eta$, $b=\eta\mu$ into the formula in (a).
+
+    \noindent(c)
+    \begin{align*}
+        B(\pi,\delta^\pi) &= \E_{\theta\sim\mathrm{n}(\mu,\tau^2)}\bracket{(1-\eta)^2\frac{\sigma^2}n + \eta^2 (\theta-\mu)^2} 
+        \\ &= (1-\eta)^2\frac{\sigma^2}n + \eta^2 \tau^2
+        \\ &= \paren{ n\tau^2 \over n\tau^2 + \sigma^2 }^2 \frac{\sigma^2}n + \paren{ \sigma^2 \over n\tau^2 + \sigma^2 }^2 \frac{n\tau^2}n
+        \\ &= \frac{\tau^2\sigma^2}{n\tau^2+\sigma^2} = \tau^2\eta.
+    \end{align*}
+}
+
+\end{document}

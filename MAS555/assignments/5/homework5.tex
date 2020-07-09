@@ -1,0 +1,203 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{stackrel}
+\usepackage{tikz}
+\allowdisplaybreaks
+
+\usepackage{macros-common}
+\usepackage{macros-prob}
+
+\title{Homework 5}
+\subject{MAS555 Advanced Statistics}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\solution[8.12]{
+    (a) The likelihood ratio test statistic is given by
+    \begin{align*}
+        \lambda(\mathbf{x}) & = \frac{\sup_{\mu\le 0} \paren{\frac 1 {\sqrt{2\pi \sigma^2}}}^n \prod_{i=1}^n \exp\bracket{-\frac{(x_i - \mu)^2}{2\sigma^2}} }{\sup_{\mu\in\RR} \paren{\frac 1 {\sqrt{2\pi \sigma^2}}}^n \prod_{i=1}^n \exp\bracket{-\frac{(x_i - \mu)^2}{2\sigma^2}} }
+        \\ &= \exp\bracket{ -\frac 1{2\sigma^2} \sum_{i=1}^n \bracket[\big]{(x_i - \hat\mu)^2 - (x_i - \bar x)} }
+    \end{align*}
+    where
+    \[ \hat\mu = \hat\mu(\mathbf x) = \min(\bar x,0)=\begin{cases}
+            \bar x, & \bar x\le 0 \\ 0,& \bar x > 0
+        \end{cases}. \]
+    Therefore,
+    \begin{align*}
+        \lambda(\mathbf x) = \begin{cases}
+            1,                                                                                                                                    & \bar x \le 0 \\
+            \exp\bracket{ -\frac 1{2\sigma^2} \sum_{i=1}^n \bracket[\big]{x_i^2 - (x_i - \bar x)} } = \exp\bracket{-\frac{n\bar x^2}{2\sigma^2}}, & \bar x> 0
+        \end{cases}.
+    \end{align*}
+    So, the LRT has the following rejection region: for $0\le c'<1$,
+    \begin{align*}
+        \set{\mathbf x:\lambda(\mathbf x) \le c'} & = \set{\mathbf x:\bar x>0\text{ and }\exp\bracket{-\frac{n\bar x^2}{2\sigma^2}} \le c'}
+        \\ &= \set{\mathbf x:\bar x>0\text{ and } \abs{\frac{\bar x}{\sigma/\sqrt n}} \ge \sqrt{-2\log c'}}
+        \\ &= \set{\mathbf x:{\frac{\bar x}{\sigma/\sqrt n}} \ge \sqrt{-2\log c'}\eqqcolon c}.
+    \end{align*}
+    Then, the power function is as follows:
+    \begin{align*}
+        \beta(\mu) & = \P{ {\frac{\bar X}{\sigma/\sqrt n}} \ge  c }
+        \\ &= \P{ {\frac{\bar X - \mu}{\sigma/\sqrt n}} \ge  c - \frac{\mu}{\sigma/\sqrt n} }
+        \\ &= 1-\Phi\paren{ c - \frac{\mu}{\sigma/\sqrt n} }
+    \end{align*}
+    where $\frac{\bar X - \mu}{\sigma/\sqrt n}\sim \mathrm n(0,1)$. Since the size of the test is $\alpha = .05$, we have
+    \begin{align*}
+        \sup_{\mu\le 0}\beta(\mu) = 1-\Phi(c) = .05\implies c = z_{.05} \approx 1.645.
+    \end{align*}
+    Finally,
+    \begin{align*}
+        \beta(\mu) = 1-\Phi\paren{ z_{.05} - \frac{\mu}{\sigma/\sqrt n} }= 1 - \Phi\paren{z_{.05} - \frac{\mu}{\sigma/\sqrt n}}
+    \end{align*}
+
+    \noindent(b) The likelihood ratio test statistic is given by
+    \begin{align*}
+        \lambda(\mathbf{x}) & = \frac{\paren{\frac 1 {\sqrt{2\pi \sigma^2}}}^n \prod_{i=1}^n \exp\bracket{-\frac{x_i^2}{2\sigma^2}} }{\sup_{\mu\in\RR} \paren{\frac 1 {\sqrt{2\pi \sigma^2}}}^n \prod_{i=1}^n \exp\bracket{-\frac{(x_i - \mu)^2}{2\sigma^2}} }
+        \\ &= \exp\bracket{-\frac{n\bar x^2}{2\sigma^2}}
+    \end{align*}
+    whence the rejection region is of the following form:
+    \begin{align*}
+        \set{\mathbf x:\lambda(\mathbf x) \le c'} & = \set{\mathbf x:\exp\bracket{-\frac{n\bar x^2}{2\sigma^2}} \le c'}
+        \\ &= \set{\mathbf x:\abs{\frac{\bar x}{\sigma/\sqrt n}} \ge \sqrt{-2\log c'}}.
+    \end{align*}
+    Then, the power function is as follows:
+    \begin{align*}
+        \beta(\mu) & = \P{ \abs{\frac{\bar X}{\sigma/\sqrt n}} \ge  c }
+        \\ &= \P{ \frac{\bar X-\mu}{\sigma/\sqrt n} \ge  c-\frac{\mu}{\sigma/\sqrt n} } + \P{ \frac{\bar X-\mu}{\sigma/\sqrt n} \le  -c-\frac{\mu}{\sigma/\sqrt n} }
+        \\ &= 1-\Phi\paren{c-\frac{\mu}{\sigma/\sqrt n} } + \Phi\paren{ -c-\frac{\mu}{\sigma/\sqrt n} }
+    \end{align*}
+    where $\frac{\bar X - \mu}{\sigma/\sqrt n}\sim \mathrm n(0,1)$. Since the size of the test is $\alpha = .05$, we have
+    \begin{align*}
+        \beta(0) = 1-\Phi(c) + \Phi(-c) = .05\implies c = z_{.025} \approx 1.960.
+    \end{align*}
+    Finally,
+    \[ \beta(\mu) = 1-\Phi\paren{ z_{.025} -\frac{\mu}{\sigma/\sqrt n} } + \Phi\paren{ - z_{.025} -\frac{\mu}{\sigma/\sqrt n} }.\]
+}
+
+\solution[8.14]{
+The CLT implies that
+\[ Z \coloneqq \frac{\sum_{i=1}^n X_i - np}{\sqrt{np(1-p)}} \mathrel{\dot\sim} \mathrm n(0,1) \]
+where $\dot\sim$ means the asymptotic distribution as $n\to\infty$. We have a test that rejects $H_0$ if $\sum X_i > c$. For the type I error,
+\begin{align*}
+    \beta(.49) & = \P{\sum_{i=1}^n X_i > c \,\bigg|\, p=.49 }
+    \\ &= \P{ Z>\frac{c-np}{\sqrt{np(1-p)}} \,\bigg|\, p=.49 }
+    \\ &= 1-\Phi\paren{\frac{c-.49\,n}{\sqrt{.49\times .51\,n}} } \le .01;
+\end{align*}
+and for the type II error,
+\begin{align*}
+    1-\beta(.51) & = \P{\sum_{i=1}^n X_i \le c \,\bigg|\, p=.51 }
+    \\ &= \P{ Z\le\frac{c-np}{\sqrt{np(1-p)}} \,\bigg|\, p=.51 }
+    \\ &= \Phi\paren{\frac{c-.51\,n}{\sqrt{.49\times .51\,n}} } \le .01.
+\end{align*}
+These imply
+\[ \frac{c-.49\,n}{\sqrt{.49\times .51\,}}\ge z_{.01} \approx 2.32635,\qquad \frac{c-.51\,n}{\sqrt{.49\times .51\,n}}\le -z_{.01} \approx -2.32635. \]
+With $c = n/2$, we have
+\[ \frac{.01\,n}{\sqrt{.49\times .51\,n}}\ge z_{.01} \implies n\ge 13525. \]
+Taking $n=13525$, $c$ becomes $6762.5$.
+}
+
+\solution[8.18]{
+    (a) \begin{align*}
+        \beta(\theta) & = \P{\abs{\bar X - \theta_0 \over \sigma/\sqrt n} > c}
+        \\ &= \P{ {\bar X - \theta_0 \over \sigma/\sqrt n} > c } + \P{ {\bar X - \theta_0 \over \sigma/\sqrt n} < -c }
+        \\ &= \P{ {\bar X - \theta \over \sigma/\sqrt n} > c + \frac{\theta_0 - \theta}{\sigma/\sqrt n} } + \P{ {\bar X - \theta \over \sigma/\sqrt n} < -c + \frac{\theta_0 - \theta}{\sigma/\sqrt n} }
+        \\ &= 1-\Phi\paren{ c + \frac{\theta_0 - \theta}{\sigma/\sqrt n} } + \Phi\paren{ -c + \frac{\theta_0 - \theta}{\sigma/\sqrt n} }.
+    \end{align*}
+
+    \noindent(b) The type I error probability is
+    \begin{align*}
+        \beta(\theta_0) = 1 - \Phi(c) + \Phi(-c) = .05
+    \end{align*}
+    so that $c = z_{.025}\approx 1.960.$ The type II error probability at $\theta = \theta_0 + \sigma$ is
+    \begin{align*}
+        1-\beta(\theta_0 + \sigma) = 1-\Phi(z_{.025} - \sqrt n) + \Phi(-z_{.025} - \sqrt n).
+    \end{align*}
+    We may assume that $\Phi(-z_{.025} - \sqrt n)$ is negligible so that
+    \[ 1-\Phi(z_{.025} - \sqrt n) \le .25 \implies z_{.025} - \sqrt n \le 0.67449 \implies n\ge 7. \]
+}
+
+\solution[8.20]{
+    Choose $k=2.5$ in the Neyman--Pearson lemma, where the test rejects $H_0$ if $f(x|H_1)/f(x|H_0)>k$. Since
+    \[\begin{array}{c|ccccccc}
+            x                         & 1 & 2 & 3 & 4 & 5 & 6 & 7     \\\hline
+            {f(x|H_1)}\big/{f(x|H_0)} & 6 & 5 & 4 & 3 & 2 & 1 & 79/94
+        \end{array},\]
+    the rejection region is $R = \set{1,2,3,4}$ and the size of the test is $\alpha = \P{X\in R\mid H_0} = .04$. The type II error probability is
+    \[ \P{X\notin R\mid H_1} = \P{X\in \set{5,6,7}} = .02+.01+.79 = .82. \]
+}
+
+\solution[8.22]{
+(a) Neyman--Pearson lemma says the most powerful test is a test which rejects $H_0$ iff
+\[ \frac{f(\mathbf x \mid p=\frac14)}{f(\mathbf x \mid p=\frac12)} = \paren{3\over 2}^{10} \paren{1\over 3}^{\sum_{i=1}^{10} X_i} > k' \]
+for some $k'$. Since the likelihood ratio above is decreasing in $\sum_{i=1}^{10} X_i$, the most powerful test is a test which rejects $H_0$ iff $\sum_{i=1}^{10} X_i \le k$ for some $k$. Observing that
+\begin{align*}
+     & \P{\sum_{i=1}^{10} X_i \le k\,\bigg|\, X_i\sim\mathrm{Bernoulli}\paren{\frac 12} }
+    \\&\qquad= \alpha = .0547 = \P{ X\le 2 \,\bigg|\, X\sim \mathrm{Binomial}\paren{10,\frac 12} },
+\end{align*}
+$k=2$ is a valid choice. So the rejection region is
+\[ \set{\mathbf x : \sum_{i=1}^{10} X_i \le 2}. \]
+Therefore, the power function $\beta$ satisfies $\beta(1/2) = 0.0547$ and
+\[ \beta\paren{\frac 14}=\P{ X\le 2 \,\bigg|\, X\sim \mathrm{Binomial}\paren{10,\frac 14} } = 0.5256. \]
+
+\noindent(b) The power function $\beta$ is
+\begin{align*}
+    \beta(p) & = \P{ \sum_{i=1}^{10} X_i \ge 6 } = \P{ X \ge 6 \,\bigg|\, X = \sum_{i=1}^{10} X_i \sim \mathrm{Binomal}(10,p)}
+\end{align*}
+and the graph of $\beta$ is as follows:
+\begin{center}
+    \begin{tikzpicture}
+        \draw[->] (-1,0) -- (4.2,0) node[right] {$p$};
+        \draw[dotted] (1.5,1.13085) -- (1.5,0) node[below] {$1/2$};
+        \draw[dotted] (3,3) -- (3,0) node[below] {$1$};
+        \draw[dotted] (1.5,1.13085) -- (0,1.13085) node[left] {$\alpha$};
+        \draw[->] (0,-1) -- (0,3.7) node[above] {$\beta(p)$};
+        \draw[scale=3,domain=0:1,smooth,variable=\x,blue] plot ({\x},{ (\x)^6 * (210 - 720 *(\x) + 945 *(\x)^2 - 560 *(\x)^3 + 126 *(\x)^4) });
+    \end{tikzpicture}
+\end{center}
+The size of the test is
+\begin{align*}
+    \alpha & = \sup_{p\le 1/2}\beta(p) = \beta\paren{\frac 12} = \frac{193}{512} \approx 0.37695.
+\end{align*}
+
+\noindent(c) Neyman--Pearson lemma tells us that the rejection region is of the form $\set{\mathbf x:\sum_{i=1}^{10} X_i \le k}$ as in (a). Thus, $\alpha$ should be matched with one of the rejection region above:
+\[ \alpha = \alpha(k) = \P{\sum_{i=1}^{10} X_i \le k \,\bigg|\, p = \frac12}, \]
+where $k=-1,0,\dots,10$ and
+\begin{align*}
+    &\alpha(-1) =0,\quad \alpha(0) = \frac{1}{1024},\quad \alpha(1) = \frac{11}{1024},\quad \alpha(2) = \frac{56}{1024},
+    \\&\alpha(3) = \frac{176}{1024},\quad  \alpha(4) = \frac{386}{1024},\quad\alpha(5) = \frac{638}{1024},\quad\alpha(6) = \frac{848}{1024},
+    \\& \alpha(7) = \frac{968}{1024},\quad \alpha(8) = \frac{1013}{1024},\quad \alpha(9) = \frac{1023}{1024},\quad\alpha(10 )=1.
+\end{align*}
+Those values are the desired values for $\alpha$.
+}
+
+\solution[8.28]{
+    (a) If $\theta_1<\theta_2$,
+    \begin{align*}
+        \frac{f_{\theta_2}(x)}{f_{\theta_1}(x)} &= \frac{e^{x-\theta_2} / e^{x-\theta_1}}{\paren{(1+e^{x-\theta_2}) \big/ (1+e^{x-\theta_1})}^2}
+        \\ &= e^{\theta_1-\theta_2} \paren{\frac{e^{-x} + e^{-\theta_1}}{e^{-x} + e^{-\theta_2}}}^2
+    \end{align*}
+    is nondecreasing in $x$. Thus, the logistic location family has an MLR.
+
+    \noindent(b) The most powerful test rejects $H_0$ if $ \frac{f_{\theta_2}(x)}{f_{\theta_1}(x)} >k'$ for some $k'$. Since $ \frac{f_{\theta_2}(x)}{f_{\theta_1}(x)} $ is nondecreasing in $x$, it is equivalent to $x>k$ for some $k$. Then the size of this test is
+    \begin{align*}
+        \alpha = \P{X>k\mid \theta=0} = \int_k^\infty \frac{e^{x}}{(1+e^x)^2}\,dx = \frac{1}{e^k + 1},
+    \end{align*}
+    hence $k = \log 4$. Then the size of the type II error is
+    \[ \beta = \P{X\le k\mid \theta=1} = \int_{-\infty}^{\log 4} \frac{e^{x-1}}{(1+e^{x-1})^2}\,dx = \frac{4}{4+e}. \]
+
+    \noindent(c) $X$ is sufficient for $\theta$ by definition of the sufficiency. Also, the logistic location family has an MLR in $X$. Therefore, for any $k$, Karlin--Rubin theorem (Theorem 8.3.17 in Casella--Berger) implies that the test rejecting $H_0\colon \theta\le 0$ iff $X>k$ is a UMP level $\alpha$ test, where $\alpha = \P{X>k\mid \theta=0}$.
+}
+
+\end{document}

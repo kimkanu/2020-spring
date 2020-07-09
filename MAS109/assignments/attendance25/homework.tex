@@ -1,0 +1,42 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{listings}
+\usepackage{stackrel}
+\usepackage{mathdots}
+
+\usepackage{macros-common}
+
+\allowdisplaybreaks
+
+\title{Attendance Quiz \#25}
+\subject{MAS109EF Introduction to Linear Algebra}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\newcommand{\row}{\operatorname{row}}
+\newcommand{\col}{\operatorname{col}}
+\newcommand{\rk}{\operatorname{rk}}
+\newcommand{\nll}{\operatorname{null}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\nullity}{\operatorname{nullity}}
+\newcommand{\tr}{\operatorname{tr}}
+
+\noindent\textit{Solution.}
+\begin{align*}
+    \lambda\mathbf v^T\mathbf u = \mathbf v^T (\lambda\mathbf u) = \mathbf v^T A\mathbf u = (A^T\mathbf v)^T\mathbf u = \mu\mathbf v^T\mathbf u
+\end{align*}
+so that $(\lambda-\mu)\mathbf v^T\mathbf u = 0$. Since $\lambda\ne \mu$, we have $\mathbf v^T\mathbf u = 0$, i.e., $\mathbf u\perp\mathbf v$.\hfill$\square$
+
+\end{document}

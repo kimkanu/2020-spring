@@ -1,0 +1,84 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{stackrel}
+
+\usepackage{macros-common}
+\usepackage{macros-matrix}
+\usepackage[bb]{macros-prob}
+
+\title{Homework 2}
+\subject{MAS583(A) Random Matrix Theory and Its Application}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+
+\solution{
+Define $I_{ij}\coloneqq \set{ (k,\ell):1\le k\le \ell \le n, (k,\ell)\ne (i,j) }$.
+\begin{align*}
+    \E[H_{ij}G_{ji}] & = \E\bracket[\Big]{ \E\bracket[\big]{ H_{ij}G_{ji} \big| H_{k\ell}\text{ for any }(k,\ell)\in I_{ij} } }
+    \\ &= \E\bracket{ \Var\bracket[\big]{ H_{ij}^2 \big|H_{k\ell}\text{ for any }(k,\ell)\in I_{ij} }\cdot \E\bracket[\bigg]{ \frac{\mathrm d G_{ji}}{\mathrm d H_{ij}}\bigg|H_{k\ell}\text{ for any }(k,\ell)\in I_{ij} } }
+    \\ &= \Var\bracket[\big]{ H_{ij}^2 }\cdot  \E\bracket{ \E\bracket[\bigg]{ \frac{\mathrm d G_{ji}}{\mathrm d H_{ij}}\bigg|H_{k\ell}\text{ for any }(k,\ell)\in I_{ij} } }.
+\end{align*}
+Here, the Stein's lemma is used. I'll justify the validity of the lemma applied here at the end of the solution.
+
+For a function $f\colon\RR^{n^2}\to \CC,\ (A_{ij})_{1\le i,j\le n}\mapsto f((A_{ij})_{1\le i,j\le n})$ and a square matrix $\mathbf A$ (with a special structure such as symmetricity), we have
+\begin{align*}
+    \frac{\mathrm df}{\mathrm dA_{ij}} = \sum_{k,\ell} \frac{\partial f}{\partial A_{k\ell}} \frac{\partial A_{k\ell}}{\partial A_{ij}} = \tr\bracket{\paren{\frac{\partial f}{\partial \mathbf A}} \frac{\partial \mathbf A}{\partial A_{ij}} }.
+\end{align*}
+In our case, $f(H) = G_{ji} = \paren[\big]{ (H-zI)^{-1} }_{ji}$ and $H$ is symmetric so that
+\begin{align*}
+    \paren{ \frac{\partial H}{\partial H_{ij}}}_{k\ell} =\frac{\partial H_{k\ell}}{\partial H_{ij}} = \delta_{ki}\delta_{\ell j} + \delta_{kj}\delta_{\ell i} - \delta_{ij}\delta_{ki}\delta_{\ell j} = \begin{cases}
+        \delta_{ki}\delta_{\ell j} + \delta_{kj}\delta_{\ell i} & \text{if }i\ne j \\
+        \delta_{ki}\delta_{\ell j}                              & \text{if }i = j
+    \end{cases}.
+\end{align*}
+Hence, we have
+\begin{align*}
+    \frac{\mathrm d G_{ji}}{\mathrm d H_{ij}} & = \sum_{k,\ell} \frac{\partial G_{ji}}{\partial H_{k\ell}}\,\frac{\partial H_{k\ell}}{\partial H_{ij}}
+    \\ &=  \begin{cases}
+        \displaystyle\frac{\partial G_{ji}}{\partial H_{ij}} + \frac{\partial G_{ji}}{\partial H_{ji}} & \text{if }i\ne j \\[10pt]
+        \displaystyle\frac{\partial G_{ji}}{\partial H_{ij}}                                           & \text{if }i = j
+    \end{cases}.
+\end{align*}
+Moreover, the following is a basic matrix identity:
+\begin{align*}
+    \frac{\partial \mathbf A^{-1}}{\partial x} = -\mathbf A^{-1} \frac{\partial A}{\partial x}\mathbf A^{-1}
+\end{align*}
+Therefore, with $\mathbf A = H-zI$ and $x=H_{ij}$,
+\begin{align*}
+    \frac{\partial G_{k\ell}}{\partial H_{ij}} & = -G_{ki}G_{j\ell},
+\end{align*}
+yielding
+\begin{align*}
+    \frac{\mathrm d G_{ji}}{\mathrm d H_{ij}} & = \begin{cases}
+        \displaystyle\frac{\partial G_{ji}}{\partial H_{ij}} + \frac{\partial G_{ji}}{\partial H_{ji}} = -G_{ji}^2 - G_{ii}G_{jj} & \text{if }i\ne j \\[10pt]
+        \displaystyle\frac{\partial G_{ji}}{\partial H_{ij}}               = -G_{ji}^2                    =-G_{ii}G_{jj}          & \text{if }i = j
+    \end{cases}.\tag{1}
+\end{align*}
+Consequently,
+\begin{align*}
+    \E[H_{ij}G_{ji}] & = \Var\bracket[\big]{ H_{ij}^2 }\cdot  \E\bracket{ \E\bracket[\bigg]{ \frac{\mathrm d G_{ji}}{\mathrm d H_{ij}}\bigg|H_{k\ell}\text{ for any }(k,\ell)\in I_{ij} } }
+    \\ &= \begin{cases}
+        \displaystyle\frac 1N \E\bracket{ -G_{ji}^2-G_{ii}G_{jj} } & \text{if }i\ne j \\[10pt]
+        \displaystyle\frac 2N \E\bracket{ -G_{ji}^2 } = \frac 1N \E\bracket{ -G_{ji}^2-G_{ii}G_{jj} } & \text{if }i = j
+    \end{cases}
+    \\ &= \frac 1N \E\bracket{ -G_{ji}^2-G_{ii}G_{jj} }
+\end{align*}
+as desired.
+
+Now, let us justify the application of the Stein's lemma appeared above. Since the inner expectation is conditioned given every $H_{k\ell}$'s except $H_{ij}$, $H_{ij}$ is the only variable which is not fixed. So, it suffices to show that $f(H_{ij}) = G_{ji}$ is good enough; $\E\abs{f'(H_{ij})} < \infty.$ Using the formula (1) of the derivative of $G_{ji}$ and the analyticity of the resolvent, $\E\abs{f'(H_{ij})} \le \E|G_{ji}^2|+\E|G_{ii}G_{jj}|<\infty$. This completes the proof.
+}
+
+
+\end{document}

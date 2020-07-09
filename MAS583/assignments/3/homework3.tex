@@ -1,0 +1,175 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{stackrel}
+
+\usepackage{macros-common}
+\usepackage{macros-matrix}
+\usepackage[bb]{macros-prob}
+
+\title{Homework 3}
+\subject{MAS583(A) Random Matrix Theory and Its Application}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+
+\solution{ (Reproducing kernel property)
+\begin{align*}
+    \int K_N(x,y)K_N(y, z) \d y &= \int \sum_{k,\ell=1}^N \psi_{k-1}(x)\psi_{k-1}(y)\psi_{\ell-1}(y)\psi_{\ell-1}(z)\d y
+    \\ &= \sum_{k,\ell=1}^N \psi_{k-1}(x) \bracket{\int\psi_{k-1}(y)\psi_{\ell-1}(y)\d y} \psi_{\ell-1}(z)
+    \\ &= \sum_{k,\ell=1}^N \psi_{k-1}(x)\delta_{k\ell}\psi_{\ell-1}(z)
+    \\ &= \sum_{k=1}^N \psi_{k-1}(x)\psi_{\ell-1}(z) 
+    \\ &= K_N(x, z).
+\end{align*}
+}
+
+\solution{ (Christoffel--Darboux formula)
+
+The given equation is meaningless when $N=0$. For $N\ge 1$, we have
+\begin{align*}
+    & \sqrt N \bracket{\frac{ \psi_N(x) \psi_{N-1}(y) - \psi_N(y) \psi_{N-1}(x) }{ x - y }}
+    \\ &= \frac{ e^{-(x^2+y^2)/4} }{ (N - 1)! \sqrt{2\pi} (x - y) } \bracket[\big]{ H_N(x)H_{N-1}(y) - H_N(y)H_{N-1}(x) }. \tag{$\star$}
+\end{align*}
+It is easy to see that the equation holds when $N=1$:
+\begin{align*}
+    \frac{ \psi_1(x) \psi_0(y) - \psi_1(y) \psi_0(x) }{ x - y }
+    &= \frac{ e^{-(x^2+y^2)/4} }{ \sqrt{2\pi} (x - y) } \bracket[\big]{ H_1(x)H_(y) - H_1(y)H_1(x) }
+    \\ &= \frac{ e^{-(x^2+y^2)/4} }{ \sqrt{2\pi} (x - y) } (x - y)
+    \\ &= \frac{ e^{-(x^2+y^2)/4} }{ 0! \sqrt{2\pi} }
+    \\ &= \psi_0(x)\psi_0(y) = K_1(x, y).
+\end{align*}
+Moreover, the Hermite polynomials satisfy the following recurrence formula $(n\ge 1)$:
+\begin{align*}
+    H_{n+1}(x) &= (-1)^{n+1}e^{x^2/2}\deriv[n+1]{x} e^{-x^2/2}
+    \\ &= (-1)^{n+1}e^{x^2/2} \deriv[n]{x} (-xe^{-x^2/2})
+    \\ &= (-1)^{n+1}e^{x^2/2} \bracket{-x \deriv[n]{x} e^{-x^2/2} - n \deriv[n-1]{x} e^{-x^2/2}}
+    \\ &= xH_n(x) - nH_{n-1}(x)
+\end{align*}
+due to the generalized Leibniz rule $(fg)^{(n)} = \sum_{r=0}^n \binom n r f^{(r)} g^{(n-r)}$. Using this, whenever $N\ge 2$,
+\begin{align*}
+    & H_N(x)H_{N-1}(y) - H_N(y)H_{N-1}(x) 
+    \\ &= (x - y) H_{N-1}(x) H_{N-1}(y) 
+    \\ & \mkern120mu + (N-1) \bracket[\big]{ H_{N-1}(x)H_{N-2}(y) - H_{N-1}(y)H_{N-2}(x) } \tag{\dagger}
+\end{align*}
+so that
+\begin{align*}
+    & \sqrt N \bracket{\frac{ \psi_N(x) \psi_{N-1}(y) - \psi_N(y) \psi_{N-1}(x) }{ x - y }}
+    \\ &\stackrel{(\star)}{=} \frac{ e^{-(x^2+y^2)/4} }{ (N - 1)! \sqrt{2\pi} (x - y) } \bracket[\big]{ H_N(x)H_{N-1}(y) - H_N(y)H_{N-1}(x) }
+    \\ &\stackrel{(\text{\dagger})}{=} \frac{ e^{-(x^2+y^2)/4} }{ (N - 1)! \sqrt{2\pi} } H_{N-1}(x)H_{N-1}(y)
+    \\ &\mkern20mu + \frac{ e^{-(x^2+y^2)/4} }{ (N - 2)! \sqrt{2\pi} (x - y) } \bracket[\big]{ H_{N-1}(x)H_{N-2}(y) - H_{N-1}(y)H_{N-2}(x) }
+    \\ &\stackrel{(\text{IH})}{=} \psi_{N-1}(x)\psi_{N-1}(y) + K_{N-1}(x, y) = K_N(x, y)
+\end{align*}
+because of the induction hypothesis.
+}
+
+\solution{ (Asymptotic behaviour)
+
+Before going into the main proof, let me summarize some properties of the Hermite polynomials. First, the Hermite polynomial $H_n$ is a polynomial of degree $n$, which can be proved by the recurrence formula above. Second, $H_n$ has odd-degree terms only when $n$ is odd, and has even-degree terms only when $n$ is even, which we can also easily derive from the recurrence formula. Third, $H_n'(x) = nH_{n-1}(x)$, since
+\begin{align*}
+    H_n'(x) &= (-1)^n \bracket{ e^{x^2/2}\,\deriv[n]{x} e^{-x^2/2} }'
+    \\ &= (-1)^n \bracket{ xe^{x^2/2} \,\deriv[n]{x} e^{-x^2/2} + e^{x^2/2} \,\deriv[n+1]{x} e^{-x^2/2} }
+    \\ &= xH_n(x) - H_{n+1}(x) = nH_{n-1}(x)
+\end{align*}
+by the recurrence formula, again. Finally, $y = y_n(x) \coloneqq e^{-x^2/4}H_n(x)$ satisfies the following differential equation:
+\begin{align*}
+    y'' + \paren{n + \frac12} y = \frac{x^2}4 \, y,
+\end{align*}
+because
+\begin{align*}
+    y'' & = \bracket{e^{-x^2/4}H_n(x)}'' 
+    \\ &= (e^{-x^2 / 4})'' H_n(x) + 2 (e^{-x^2 / 4})'H_n'(x) + e^{-x^2 / 4} H_n''(x)
+    \\ &= \paren{\frac{x^2}4 - \frac12} e^{-x^2/4}H_n(x) - x e^{-x^2/4} nH_{n-1}(x) + e^{-x^2/4} n(n-1)H_{n-2}(x)
+    \\ &= \paren{\frac{x^2}4 - \frac12} e^{-x^2/4}H_n(x) - n e^{-x^2/4} H_n(x)
+    \\ &= \frac{x^2}4\,y - \paren{n+\frac12}y.
+\end{align*}
+An arbitrary solution of this differential equation can be represented by $y = y_h + y_p$, where the homogeneous solution is $y_h = c_1 y_1 + c_2 y_2$ with
+\begin{align*}
+    y_1 = \cos\paren{\sqrt{n + \frac12}\,x}, \quad\text{and} \quad
+    y_2 = \sin\paren{\sqrt{n + \frac12}\,x},
+\end{align*}
+and the particular solution $y_p$ is given by
+\begin{align*}
+    y_p &= \int_0^x \frac{ y_1(x)y_2(t) - y_2(x)y_1(t) }{ y_1'(t)y_2(t) - y_2'(t)y_1(t) } \cdot \frac{t^2}4\, y(t)\d t
+    \\ &= \int_0^x \left[\cos\paren{\sqrt{n + \frac12}\,t}\sin\paren{\sqrt{n + \frac12}\,x} \right.
+    \\ &\mkern60mu \left.-\sin\paren{\sqrt{n + \frac12}\,t}\cos\paren{\sqrt{n + \frac12}\,x}\right] \frac{t^2}4\,e^{-t^2/4}H_n(t)\d t
+\end{align*}
+Fix a particular $n$. As $x\to 0$, $y \to y(0) = H_n(0)$, and $y_p = O(x^4)$ so that
+\begin{align*}
+    y=c_1 y_1 + c_2 y_2 + y_p &= c_1 (1 + O(x^2)) + c_2 \paren{\sqrt{n + \frac12}\, x + O(x^3)} + O(x^4).
+\end{align*}
+
+For an odd integer $n$, $y\to c_1 = H_n(0) = 0$. Also, $y'(0)$, the coefficient of the term of degree 1, is $y'(0) = 0 + H_n'(0) = nH_{n-1}(0) = c_2 (n + \frac12)^{1/2}$, therefore $c_2 = nH_{n-1}(0)(n + \frac12)^{-1/2}$. Analogously for an even integer $n$, we have $y \to c_1 = H_n(0)$ as $x\to 0$ and $c_2 = nH_{n-1}(0)(n + \frac12)^{-1/2} = 0.$ To summarize, we obtained
+\begin{align*}
+    y = e^{-x^2/4}H_n(x) = \begin{cases}
+        \frac{n H_{n-1}(0)}{\sqrt{n + \frac12}}\sin\paren{\sqrt{n + \frac12} \, x} + y_p,&\text{$n$ is odd} \\
+        H_n(0)\cos\paren{\sqrt{n + \frac12} \, x} + y_p,&\text{$n$ is even}
+    \end{cases}.
+\end{align*}
+Actually, we can calculate the value of $H_n(0)$, using the recurrence formula: $H_n(0) = -(n-1)H_{n-2}(0)$, with the value of the base cases $H_0(0) = 1$ and $H_1(0) = 0$. This gives the following result:
+\begin{align*}
+    H_n(0) = \begin{cases}
+        0,&\text{$n$ is odd} \\
+        (-1)^{n/2}\,(n-1)!! = \frac{ (-1)^{n/2}\,n! }{ 2^{n/2} \frac n2! },&\text{$n$ is even}
+    \end{cases}.
+\end{align*}
+Note that $\psi_n(x) = (n!\sqrt{2\pi})^{-1/2} y$. Therefore, with $n=N-\ell$,
+\begin{align*}
+    & N^{1/4} \psi_n(N^{-1/2}t)
+    \\ &= N^{1/4} (n! \sqrt{2\pi})^{-1/2} y_n(N^{-1/2}t)
+    \\ &= N^{1/4} (n! \sqrt{2\pi})^{-1/2} y_h(N^{-1/2}t) + N^{1/4} (n! \sqrt{2\pi})^{-1/2} y_p(N^{-1/2}t)).
+\end{align*}
+When $n$ is even,
+\begin{align*}
+    y_p(N^{-1/2}t) &= \int_0^{N^{-1/2}t} O(u^2)\cdot H_n(u)\d u
+    \\ &= \int_0^{N^{-1/2}t} O(u^2)\cdot (H_n(0) + O(u))\d u
+    \\ &= H_n(0) O((N^{-1/2}t)^3) + O((N^{-1/2}t)^4)
+    \\ &= H_n(0) O_t(N^{-3/2}).
+\end{align*}
+(Here, the convergence is locally uniform on $t$, since the coefficients for $N$ is polynomially growing: $O(t^3)$.) Thus,
+\begin{align*}
+    & N^{1/4} \psi_n(N^{-1/2}t)
+    \\ &= N^{1/4} (n! \sqrt{2\pi})^{-1/2} y_n(N^{-1/2}t)
+    \\ &= N^{1/4} (n! \sqrt{2\pi})^{-1/2} H_n(0)\bracket{ \cos\paren{\sqrt{\frac{n+1/2} N }\, t} + O_t(N^{-3/2}) }
+    \\ &= \frac{(-1)^{n/2}}{\sqrt\pi}\cos t + o_t(1)
+    \\ &= \frac1{\sqrt\pi}\cos\paren{t - \frac{n\pi}2} + o_t(1)
+\end{align*}
+as
+\begin{align*}
+    N^{1/4}(n!\sqrt{2\pi})^{-1/2}H_n(0) &= (-1)^{n/2} N^{1/4}(n!\sqrt{2\pi})^{-1/2} \,\frac{n!}{2^{n/2}(n/2)!}
+    \\ &= (-1)^{n/2} N^{1/4}(2\pi)^{-1/4} \,\frac{(n!)^{1/2}}{2^{n/2}(n/2)!}
+    \\ &\sim (-1)^{n/2} N^{1/4}(2\pi)^{-1/4} \,\frac{(2\pi n)^{1/4} (n/e)^{n/2}}{2^{n/2}\sqrt{\pi n}(n/(2e))^{n/2}}
+    \\ &= \frac{(-1)^{n/2}}{\sqrt\pi}
+\end{align*}
+(Here, $\sim$ means the ratio tends to 1 as $n$ grows.) And note that the convergence of $o_t(1)$ term is also locally uniform since $\cos(t\,(n+1/2)^{-1/2}N^{-1/2})\to \cos t$ locally uniformly.
+
+In a similar fashion, when $n$ is odd, $y_p(N^{-1/2}t) = O((N^{-1/2}t)^4) = O_t(N^{-2})$ with local uniform convergence since $H_n(0) = 0$. Therefore, we have
+\begin{align*}
+    & N^{1/4} \psi_n(N^{-1/2}t)
+    \\ &= N^{1/4} (n! \sqrt{2\pi})^{-1/2} y_n(N^{-1/2}t)
+    \\ &= N^{1/4} (n! \sqrt{2\pi})^{-1/2} \,\frac{nH_{n-1}(0)}{\sqrt{n+\frac12}}\sin\paren{\sqrt{\frac{n+1/2} N }\, t} + O_t(N^{-2}) 
+    \\ &= \frac{(-1)^{(n-1)/2}}{\sqrt\pi}\sin t + o_t(1)
+    \\ &=\frac1 {\sqrt\pi}\cos\paren{t - \frac{n\pi}2} + o_t(1)
+\end{align*}
+as
+\begin{align*}
+    & N^{1/4} (n! \sqrt{2\pi})^{-1/2} \,\frac{nH_{n-1}(0)}{\sqrt{n+\frac12}}
+    \\ &= (-1)^{(n-1)/2} N^{1/4}(n!\sqrt{2\pi})^{-1/2} n \paren{n+\frac12}^{-1/2} \,\frac{(n-1)!}{2^{(n-1)/2}((n-1)/2)!}
+    \\ &= (-1)^{(n-1)/2} N^{1/4}(\sqrt{2\pi})^{-1/2} n^{1/2} \paren{n+\frac12}^{-1/2} \,\frac{((n-1)!)^{1/2}}{2^{(n-1)/2}((n-1)/2)!}
+    \\ &= (-1)^{(n-1)/2} N^{1/4}(\sqrt{2\pi})^{-1/2} n^{1/2} \paren{n+\frac12}^{-1/2} \,\frac{(2\pi (n-1))^{1/4} (\frac{n-1}e)^{(n-1)/2}}{2^{(n-1)/2}\sqrt{\pi(n-1)}(\frac{n-1}{2e})^{(n-1)/2}}
+    \\ &= \frac{(-1)^{(n-1)/2}}{\sqrt\pi}.
+\end{align*}
+This completes the proof of the asymptotic of $\psi_n$.
+}
+
+
+\end{document}

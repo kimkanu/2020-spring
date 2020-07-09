@@ -1,0 +1,214 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{stackrel}
+\allowdisplaybreaks
+
+\usepackage{macros-common}
+\usepackage{macros-prob}
+
+\title{Homework 2}
+\subject{MAS555 Advanced Statistics}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\solution[5.15] {
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\alph*)}, topsep=0pt]
+        \item $(n+1)\bar X_{n+1} = X_1 +\cdots + X_{n+1} = n\bar X_n + X_{n+1}$.
+        \item \begin{align*}
+                  nS_{n+1}^2 & = \sum_{i=1}^{n+1} (X_i - \bar X_{n+1})^2
+                  \\ &= \sum_{i=1}^{n+1} \paren{X_i - \frac{X_{n+1} + n\bar X_n}{n+1}}^2 +\paren{X_{n+1} - \frac{X_{n+1} + n\bar X_n}{n+1}}^2
+                  \\ &= \sum_{i=1}^{n} \paren{X_i - \bar X_n - \frac{X_{n+1} - \bar X_n}{n+1}}^2 + \frac{n^2}{(n+1)^2}\paren{X_{n+1} - \bar X_n}^2
+                  \\ &= \sum_{i=1}^{n} \bracket[\bigg]{(X_i - \bar X_n)^2 + \paren{\frac{X_{n+1} - \bar X_n}{n+1}}^2 - \uwave{2(X_i-\bar X_n)\paren{\frac{X_{n+1} - \bar X_n}{n+1}}}_{\mathrlap{\Sigma\,(\cdots) = 0}}}
+                  \\[-6pt] &\qquad+ \frac{n^2}{(n+1)^2}\paren{X_{n+1} - \bar X_n}^2
+                  \\ &= \sum_{i=1}^{n}(X_i - \bar X_n)^2 + \frac{n}{(n+1)^2}\paren{X_{n+1} - \bar X_n}^2 + \frac{n^2}{(n+1)^2}\paren{X_{n+1} - \bar X_n}^2
+                  \\ &= (n-1)S_n^2 + \frac{n}{n+1}\,(X_{n+1} - \bar X_n)^2.
+              \end{align*}
+    \end{enumerate}
+}
+
+\solution[5.17] {
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\alph*)}, topsep=0pt]
+        \item Following the discussion just before Example 5.3.7 in the book, we can reduce this task to finding the pdf of $X=(U/p)/(V/q)$, where $U$ and $V$ are independent, $U\sim \chi_p^2$ and $V\sim \chi_q^2$. By transforming $(u,v)$ into $(z,w) = (u+v, u/v)$, we have ($(Z,W)$ is the image of $(U,V)$ under the transformation)
+              \begin{align*}
+                  \pdf_{Z,W}(z,w) & = \pdf_{U,V}(u,v) \begin{vmatrix} \partial z/\partial u & \partial z/\partial v \\ \partial w/\partial u & \partial w/\partial v \end{vmatrix}^{-1}
+                  \\ &= C^{(1)}_{p,q}\,u^{p/2-1}v^{q/2-1} e^{-(u+v)/2} \,\frac{v^2}{u+v}
+                  \\ &= C^{(1)}_{p,q}\, z^{(p+q)/2 - 1} e^{-z/2} \paren{w \over 1+w}^{p/2} \paren{1 \over 1+w}^{q/2} w^{-1}
+              \end{align*}
+              where $C^{(1)}_{p,q} \coloneqq (2^{(p+q)/2}\,\Gamma(p/2)\,\Gamma(q/2))^{-1}$. Thus, the marginal pdf for $W$ is as follows:
+              \begin{align*}
+                  \pdf_{W}(w) & =\int_0^\infty \pdf_{Z,W}(z,w)\,dz
+                  \\ &= C^{(1)}_{p,q}\bracket{\int_0^\infty z^{(p+q)/2 - 1} e^{-z/2} \,dz} \paren{w \over 1+w}^{p/2} \paren{1 \over 1+w}^{q/2} w^{-1}
+                  \\ &= C^{(1)}_{p,q}\,C^{(2)}_{p,q} \paren{w \over 1+w}^{p/2} \paren{1 \over 1+w}^{q/2} w^{-1}
+              \end{align*}
+              where $C^{(2)}_{p,q}=2^{(p+q)/2}\,\Gamma((p+q)/2)$, which can be evaluated by substituting $z\mapsto z/2$ and using the definition of the Gamma function. Since $X = qW/p$, we have
+              \begin{align*}
+                  \pdf_X(x) & = (p/q)\,\pdf_W(px/q)
+                  \\ &= C^{(1)}_{p,q}\,C^{(2)}_{p,q}\paren{px \over px+q}^{p/2} \paren{q \over px+q}^{q/2} x^{-1}
+                  \\ &= \frac{\Gamma(\frac{p+q}2)}{\Gamma(\frac{p}2)\,\Gamma(\frac{q}2)}\paren{px \over px+q}^{p/2} \paren{q \over px+q}^{q/2} x^{-1}
+                  \\ &= \frac{\Gamma(\frac{p+q}2)}{\Gamma(\frac{p}2)\,\Gamma(\frac{q}2)} \paren{p\over q}^{p/2} {x^{p/2-1}\over (1+px/q)^{(p+q)/ 2}}
+              \end{align*}
+              where the support of $x$ is $(0,\infty)$.
+
+        \item \begin{align*}
+                  \E X & = \int_0^\infty \frac{\Gamma(\frac{p+q}2)}{\Gamma(\frac{p}2)\,\Gamma(\frac{q}2)} \paren{p\over q}^{p/2} {x^{p/2-1}\over (1+px/q)^{(p+q)/ 2}}\cdot x\,dx
+                  \\ &= \frac q {p\,\mathrm B(\frac p 2,\frac q 2)} \int_0^\infty  {(px/q)^{p/2}\over (1+px/q)^{(p+q)/ 2}}\,d(px/q)
+                  \\ &= \frac q {p\,\mathrm B(\frac p 2,\frac q 2)} \int_0^\infty  \paren{u\over 1+u}^{p/2} \paren{1\over 1+u}^{q/2}\,du\tag{$u\coloneqq px/q$}
+                  \\ &= \frac q {p\,\mathrm B(\frac p 2,\frac q 2)} \int_0^1 (1-t)^{p/2} t^{q/2 - 2}\,dt\tag{$t\coloneqq 1/(1+u)$}
+                  \\ &= \frac {q\,\mathrm B(\frac p2 + 1, \frac q2 - 1)} {p\,\mathrm B(\frac p 2,\frac q 2)} = \frac{q}{q-2} \qquad{(q>2)}
+              \end{align*}
+              where $\mathrm B(\alpha,\beta)=\int_0^1 t^{\alpha-1}(1-t)^{\beta-1}\,dt=\Gamma(\alpha)\Gamma(\beta)/\Gamma(\alpha+\beta)$ is the Beta function, and the integral $\int_0^1 (1-t)^{p/2} t^{q/2 - 2}\,dt$ converges only if $\frac{q}2-1 > 0$, that is, $q>2$.
+              \begin{align*}
+                  \E [X^2]           & = \int_0^\infty \frac{\Gamma(\frac{p+q}2)}{\Gamma(\frac{p}2)\,\Gamma(\frac{q}2)} \paren{p\over q}^{p/2} {x^{p/2-1}\over (1+px/q)^{(p+q)/ 2}}\cdot x^2\,dx
+                  \\ &= \frac {q^2} {p^2\,\mathrm B(\frac p 2,\frac q 2)} \int_0^\infty  {(px/q)^{p/2+1}\over (1+px/q)^{(p+q)/ 2}}\,d(px/q)
+                  \\ &= \frac {q^2} {p^2\,\mathrm B(\frac p 2,\frac q 2)} \int_0^\infty  \paren{u\over 1+u}^{p/2+1} \paren{1\over 1+u}^{q/2-1}\,du\tag{$u\coloneqq px/q$}
+                  \\ &= \frac {q^2} {p^2\,\mathrm B(\frac p 2,\frac q 2)} \int_0^1 (1-t)^{p/2+1} t^{q/2 - 3}\,dt\tag{$t\coloneqq 1/(1+u)$}
+                  \\ &= \frac {q^2\,\mathrm B(\frac p2 + 2, \frac q2 - 2)} {p^2\,\mathrm B(\frac p 2,\frac q 2)} = \frac{q^2(p+2)}{p(q-2)(q-4)} \qquad{(q>4)},\\
+                  \therefore \Var{X} & =  \frac{q^2(p+2)}{p(q-2)(q-4)} - \frac{q^2}{(q-2)^2}
+                  = \frac{2q^2(p+q-2)}{p(q-2)^2(q-4)}\qquad (q>4).
+              \end{align*}
+        \item \begin{align*}
+                  \pdf_{1/X}(y) & = \pdf_X(1/y)\cdot y^{-2}
+                  \\ &= \frac{\Gamma({p+q\over 2})}{\Gamma({p\over 2})\Gamma({q\over 2})}\,\paren{p\over q}^{p/2}\frac{y^{-(p/2+1)}}{{(1+p/(qy))^{(p+q)/2}}}
+                  \\ &= \frac{\Gamma({p+q\over 2})}{\Gamma({p\over 2})\Gamma({q\over 2})}\,\paren{p\over q}^{p/2}\frac{(\frac q p)^{(p+q)/2}y^{q/2-1}}{{(1 + qy/p)^{(p+q)/2}}}
+                  \\ &= \frac{\Gamma({p+q\over 2})}{\Gamma({q\over 2})\Gamma({p\over 2})}\,\paren{q\over p}^{q/2}\frac{y^{q/2-1}}{{(1 + qy/p)^{(p+q)/2}}},
+              \end{align*}
+              hence $1/X\sim F_{q,p}$.
+
+        \item Define $Y=(p/q)X/[1+(p/q)X]$. Then,
+              \begin{align*}
+                  \pdf_{Y}(y) & = \pdf_X\paren{ qy\over p(1-y) } \left|\frac{\partial}{\partial y} \frac{qy}{p(1-y)}\right|
+                  \\ &= \frac{\Gamma({p+q\over 2})}{\Gamma({q\over 2})\Gamma({p\over 2})}\,\paren{p\over q}^{p/2}\paren{\frac{qy}{p(1-y)}}^{p/2-1}(1-y)^{(p+q)/2}\cdot \frac{q}{p(1-y)^2}
+                  \\ &= \frac{\Gamma({p+q\over 2})}{\Gamma({q\over 2})\Gamma({p\over 2})}\,\paren{\frac{y}{1-y}}^{p/2}(1-y)^{(p+q)/2}\cdot \frac{1}{y(1-y)}
+                  \\ &= \frac{\Gamma({p+q\over 2})}{\Gamma({q\over 2})\Gamma({p\over 2})}\,y^{p/2-1} (1-y)^{q/2-1}
+              \end{align*}
+              so that $Y=(p/q)X/[1+(p/q)X]$ has a beta distribution with parameters $p/2$ and $q/2$.
+    \end{enumerate}
+}
+
+\solution[5.25] {
+Define $Y_1=\frac{X_{(1)}}{X_{(2)}},\cdots,Y_{n-1}=\frac{X_{(n-1)}}{X_{(n)}}, Y_n=X_{(n)}$ and let $(x_1,\dots,x_n) = (y_1\cdots y_n,\dots,y_{n-1}y_n, y_n)$. Then,
+\begin{align*}
+     & \pdf_{ Y_1,\dots,Y_n }(y_1,\dots,y_n)
+    \\ &= \pdf_{ X_{(1)},\dots,X_{(n)} } (x_1,\dots,x_n) \cdot \abs{\paren{ \frac{\partial x_i}{\partial y_j} }_{ij}}
+    \\ &= \pdf_{ X_{(1)},\dots,X_{(n)} } (y_1\cdots y_n,\dots,y_n) \cdot y_2y_3^2\cdots y_n^{n-1}
+    \\ &= n! \,I(0<y_1<1,\dots,0<y_{n-1}<1)\prod_{j=1}^n f(y_j\cdots y_n)\cdot y_2y_3^2\cdots y_n^{n-1}
+    \\ &= \paren{ \prod_{j=1}^{n-1} I(0<y_j<1) \cdot ja\, y_j^{ja-1} } \paren{ I(0<y_n<\theta) \,\frac{na}{\theta^{na}}\,y_n^{na-1} }.
+\end{align*}
+This proves that $Y_j = X_{(j)}/X_{(j+1)}$ has a pdf $ja\, y_j^{ja-1} \ (0<y_j<1)$ for $j=1,\dots,n-1$ and $na \theta^{-na}y_n^{na-1} \ (0<y_n < \theta)$ for $j=n$ and all the $Y_j$'s are independent.
+}
+
+\solution[5.36] {
+    Seeing the mgf of $Y$,
+    \begin{align*}
+        \mgf_Y(t) & =\E[\E(e^{tY}|N)] = \E[\mgf_{Y|N}(t)] = \E[(1-2t)^{-N}]
+        \\ &= \sum_{n=0}^\infty (1-2t)^{-n}\,\frac{\theta^{-n}e^{-\theta}}{n!} = e^{-\theta}\,e^{\theta/(1-2t)},
+    \end{align*}
+    we have
+    \begin{align*}
+        \text{(a)}\quad \E Y & = \frac{d}{dt}\,\mgf_Y(t)\bigg|_{t=0} = e^{-\theta}e^{\theta/(1-2t)}\,\frac{2\theta}{(1-2t)^2}\bigg|_{t=0} = 2\theta, \\
+        \E Y^2               & = \frac{d^2}{dt^2}\,\mgf_Y(t)\bigg|_{t=0}
+        \\ &= e^{-\theta}e^{\theta/(1-2t)}\paren{\paren{\frac{2\theta}{(1-2t)^2}}^2 + \frac{8\theta}{(1-2t)^3}}\bigg|_{t=0} = 4\theta^2 + 8\theta,\\
+        \Var Y               & = (4\theta^2 + 8\theta) - (2\theta)^2 = 8\theta.
+    \end{align*}
+    And since
+    \begin{align*}
+        \mgf_{(Y - \E Y)/\sqrt{\Var Y}}(t) & = e^{-t\sqrt{\theta / 2}} \E[ e^{Y\cdot t/\sqrt{8\theta}} ]
+        \\ &= e^{-t\sqrt{\theta / 2}} e^{-\theta} e^{\theta / (1 - (t/\sqrt{2\theta}))}
+        \\ &= \exp\paren{ \frac{\theta}{1 - \frac{t}{\sqrt{2\theta}}} -\theta -\frac{\theta t}{\sqrt{2\theta}}}
+        \\ &= \exp\paren{ \theta\sum_{n\ge 0} \paren{ t\over \sqrt{2\theta} }^n -\theta -\frac{\theta t}{\sqrt{2\theta}}}
+        \\ &= \exp\paren{ \sum_{n\ge 0} \paren{ t^{n+2}\over  2^{n/2 + 1}\theta^{n/2}} }
+        \\ & \mkern-32mu \xrightarrow[\theta\to\infty]{} \exp(t^2/2) = \mgf_{\mathrm n(0,1)}(t),
+    \end{align*}
+    $(Y - \E Y)/\sqrt{\Var Y}$ converges to a standard normal random variable in distribution.
+}
+
+\solution[5.38] {
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\alph*)}, topsep=0pt]
+        \item For $0<t<h$, $\P{S_n > a} = \P{e^{tS_n} > e^{ta}} \le \E e^{-at} e^{tS_n} = e^{-at} [M_X(t)]^n$. Similarly, for $-h<t<0$, $\P{S_n \le a} = \P{e^{tS_n} \ge e^{ta}} \le \E e^{-at} e^{tS_n} = e^{-at} [M_X(t)]^n$.
+        \item Since $M_X'(0) = \E X < 0$, we have $M_X(t) = 1 + \E X \,t + O(t^2) \le 1 + \frac{\E X}2 \,t < 1 + \frac{\E X}{4}\,t$ for $0<t<h'$, where $h'(\le h)$ is some sufficiently small positive real number. Thus, fixing any $0<t<h'$, for $c = 1 + \frac{\E X}{4}\,t$, we have
+              \begin{align*}
+                  \frac{e^{-at}M_X(t)^n}{c^n}\to 0\text{ as $n\to\infty$}.
+              \end{align*}
+              Therefore, $\P{S_n > a} \le e^{-at}M_X(t)^n \le c^n$ for sufficiently large $n$.
+
+              Similarly, when $\E X = M_X'(0) > 0$, we have $M_X(t) = 1 + \E X \,t + O(t^2) \le 1 + \frac{\E X}2 \,t < 1 + \frac{\E X}{4}\,t$ for $-h'<t<0$ for some $h' (\le h)$. Analogously, we have $\P{S_n \le a}\le c^n$ where $c = 1+\frac{\E X}4\,t$ and $n$ is sufficiently large.
+        \item Note that $\E Y_i = \E(X_i-\mu-\varepsilon) = -\varepsilon<0$. Thus, \begin{align*}
+                  \P{\bar X_n - \mu > \varepsilon} = \P{\sum_{i=1}^n Y_i > 0} \le c^n
+              \end{align*}
+              for some $0<c<1$ and every sufficiently large $n$.
+        \item Note that $\E Y_i = \E(-X_i+\mu-\varepsilon) = -\varepsilon<0$. Thus, \begin{align*}
+                  \P{-X_i+\mu > \varepsilon} = \P{\sum_{i=1}^n Y_i > 0} \le (c')^n
+              \end{align*}
+              for some $0<c'<1$ and every sufficiently large $n$. Combining this, with $0<c'' \coloneqq \max(c,c')<1$ where $c$ is from (c) and $c'$ is from the above, we have
+              \begin{align*}
+                  \P{|X_i-\mu| > \varepsilon}  =\P{\bar X_n - \mu > \varepsilon}+\P{-X_i+\mu > \varepsilon} \le 2(c'')^n,
+              \end{align*}
+              which completes the proof.
+    \end{enumerate}
+}
+
+\solution[p.8\,(2)]{
+    The characteristic function of $X_n$ is as follows:
+    \begin{align*}
+        \chf_{X_n}(t) & = \E[e^{itX_n}]= \sum_{k=0}^n \binom n k(e^{it} p_n)^k (1-p_n)^{n-k} =(1-p_n+e^{it}p_n)^n.
+    \end{align*}
+    Thus,
+    \begin{align*}
+        \lim_{n\to\infty}\chf_{X_n}(t) & =
+        \paren{1+\frac 1 n\,np_n(e^{it}-1)}^n \to e^{\lambda(e^{it} - 1)}.
+    \end{align*}
+    Note that the Poisson distribution has the same chf: for $P\sim \text{Poisson}(\lambda)$,
+    \begin{align*}
+        \chf_{P}(t) = \sum_{n\ge 0} \frac{(e^{it}\lambda)^n e^{-\lambda}}{n!} = e^{e^{it}\lambda} e^{-\lambda} = e^{\lambda(e^{it}-1)}.
+    \end{align*}
+    Hence, by the continuity theorem, $X_n\xrightarrow[n\to\infty]{d} P(\lambda)$.
+}
+
+\solution[extra\,credit]{
+    Find the limiting distribution of the intercept estimate and check the Lindeberg--Feller condition.
+
+    \noindent\textcolor{white!60!black}{\rule{3cm}{0.2pt}}\hfill\\[5mm]
+    %
+    Since $\bar Y = \hat\alpha_n^{LSE} + \hat\beta_n^{LSE}\bar x$,
+    \begin{align*}
+        \hat\alpha_n^{LSE} & = \bar Y -  \hat\beta_n^{LSE}\bar x
+        \\ &= \alpha+\beta\bar x + \frac1n \sum_{j=1}^n e_j - \paren{\beta + \sum_{j=1}^n \frac{x_j-\bar x}{S_{xx}}\,e_j}\bar x
+        \\ &= \alpha + \sum_{j=1}^n\paren{\frac 1n -\frac{(x_j-\bar x)\bar x}{S_{xx}} }e_j.
+    \end{align*}
+    Denote $X_{nj} = \paren{\frac 1n -\frac{(x_j-\bar x)\bar x}{S_{xx}} }e_j$ and $S_n = \sum_{j=1}^n X_{nj}$. Then,
+    $$
+        \begin{array}{c}
+            \displaystyle\E X_{nj} = 0, \qquad  \Var X_{nj} =  \paren{\frac 1n -\frac{(x_j-\bar x)\bar x}{S_{xx}} }^2 \sigma^2, \\
+            \displaystyle\therefore \Var S_n = \sum_{j=1}^n \paren{\frac 1n -\frac{(x_j-\bar x)\bar x}{S_{xx}} }^2 \sigma^2= \paren{\frac1n + \frac{\bar x^2}{S_{xx}}}\sigma^2.
+        \end{array}
+    $$
+    Then the corresponding Lindeberg--Feller condition is as follows: for every $\varepsilon>0$,
+    \begin{align*}
+         & \frac{1}{\Var(S_n)}\sum_{j=1}^n \E\bracket{ X_{nj}^2\cdot I\paren{ |X_{nj}|\ge \varepsilon \sqrt{\Var(S_n)} } }
+        \\ &= \frac{1}{  \paren{\frac1n + \frac{\bar x^2}{S_{xx}}}\sigma^2 }\sum_{j=1}^n  \Bigg\{\paren{\frac 1n -\frac{(x_j-\bar x)\bar x}{S_{xx}} }^2\cdot
+        \\ &\qquad\qquad \E\bracket{ e_j^2\cdot I\paren{ \paren{\frac 1n -\frac{(x_j-\bar x)\bar x}{S_{xx}} }^2 e_j^2 \ge \varepsilon^2\sigma^2 \paren{\frac 1 n + \frac{\bar x^2}{S_{xx}}  }  } } \Bigg\}
+        \\ &\le \frac{1}{  \paren{\frac1n + \frac{\bar x^2}{S_{xx}}}\sigma^2 }\bracket{\sum_{j=1}^n  \paren{\frac 1n -\frac{(x_j-\bar x)\bar x}{S_{xx}} }^2}\cdot
+        \\ &\qquad\qquad \E\bracket{ e_1^2\cdot I\paren{ e_1^2 \ge \varepsilon^2\sigma^2\,\frac {{\frac 1 n + \frac{\bar x^2}{S_{xx}}} }{  \max_{1\le j\le n} \paren{\frac 1n -\frac{(x_j-\bar x)\bar x}{S_{xx}} }^2  }   } } \xrightarrow{n\to\infty} 0
+    \end{align*}
+    if $ \paren{{\frac 1 n + \frac{\bar x^2}{S_{xx}}} } \!\bigg /{  \max_{1\le j\le n} \paren{\frac 1n -\frac{(x_j-\bar x)\bar x}{S_{xx}} }^2  }  \xrightarrow{n\to\infty} 0. $ If so, we have
+    \begin{align*}
+        \frac{S_n}{\sqrt{\Var S_n}} = \frac{\hat\alpha_n - \alpha}{ \sqrt{\frac1n + \frac{\bar x^2}{S_{xx}}}\,\sigma } \xrightarrow{d} \mathcal N(0,1).
+    \end{align*}
+}
+
+\end{document}

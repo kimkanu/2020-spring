@@ -1,0 +1,272 @@
+% ! TeX program = lualatex
+
+\documentclass{homework}
+% \usepackage{lua-visual-debug}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage{ulem}
+\usepackage{stackrel}
+\allowdisplaybreaks
+
+\usepackage{macros-common}
+\usepackage{macros-prob}
+
+\title{Homework 3}
+\subject{MAS555 Advanced Statistics}
+\studentid{20170058}
+\name{Keonwoo Kim}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\solution {
+    (Questions on Page 8 of Lecture 8 slide)
+
+    \begin{enumerate}[label={(\roman*)}, topsep=0pt]
+        \item Let $Y_i$ be i.i.d. Bernoulli$(p)$ variables. Then $\frac 1 n X_n \eqdist \bar Y_n$, the sample mean of $Y_i$'s. Letting
+              \begin{align*}
+                  \tilde g(x) & = \log \frac{x + b/n}{1-x+a/n},\qquad\text{and}             \\
+                  g(x)        & = \log\frac{x}{1-x} + \paren{\frac b p - \frac aq}\frac 1n,
+              \end{align*}
+              we have
+              \begin{align*}
+                  \log \frac{p + \frac bn}{q + \frac an} & = \log \frac{p + bh}{q + ah}\bigg|_{h = 1/n} = \log \frac p q + \paren{\frac bp - \frac aq}h + O(h^2)\bigg|_{h = 1/n}
+                  \\ &= \log\frac pq + \paren{\frac bp - \frac aq} \frac 1n + O(n^{-2}), \\
+                  \tilde g(x) - g(x)                     & = \log \frac{x + \frac bn}{1-x+\frac an} - \log\frac{x}{1-x} - \paren{\frac b p - \frac aq}\frac 1n
+                  \\ &=\log\frac{x + \frac bn}{1-x+\frac an} -\log \frac{p + \frac bn}{q + \frac an} - \log\frac{x}{1-x} + \log\frac pq + O(n^{-2}).
+              \end{align*}
+              Near $x=p$,
+              \begin{align*}
+                   & \log\frac{x + \frac bn}{1-x+\frac an} -\log \frac{p + \frac bn}{q + \frac an}= \paren{\frac{1}{p+\frac bn} + \frac{1}{q+\frac an} }(x-p)
+                  \\ & \mkern120mu - \frac 12 \paren{\frac1{(p+\frac bn)^2} - \frac1{(q+\frac an)^2}} (x-p)^2 + O((x-p)^3), \\
+                   & \log\frac{x}{1-x} -\log \frac{p }{q}
+                  \\ &\mkern60mu = \paren{\frac{1}{p} + \frac{1}{q} }(x-p) - \frac 12 \paren{\frac1{p^2} - \frac1{q^2}} (x-p)^2 + O((x-p)^3), \\
+                   & \therefore \log\frac{x + \frac bn}{1-x+\frac an} -\log \frac{p + \frac bn}{q + \frac an} - \log\frac{x}{1-x} + \log\frac pq
+                  \\ &= \paren{ \frac1{p+\frac bn} - \frac1p +  \frac1{q+\frac an}-\frac 1q }(x-p)
+                  \\ &\quad- \frac 12 \bracket{\paren{\frac1{(p+\frac bn)^2} - \frac 1{p^2}} - \paren{\frac1{(q+\frac an)^2} - \frac 1{q^2}}}(x-p)^2 + O((x-p)^3)
+                  \\ &= -\frac 1 n \paren{ \frac{b}{p(p+\frac bn)} + \frac{a}{q(q+\frac an)} }(x-p)
+                  \\ &\quad + \frac12 \cdot \frac 1n \paren{\frac{2bp + \frac {b^2}n}{p^2(p+\frac bn)^2} - \frac{2aq + \frac {a^2}n}{q^2(q+\frac an)^2} } (x-p)^2 + O((x-p)^3)
+                  \\ &= O(n^{-1})(x-p) + O(n^{-1})(x-p)^2 + O((x-p)^3)
+              \end{align*}
+              so that
+              \begin{align*}
+                  \tilde g(x) - g(x) & =\log\frac{x + \frac bn}{1-x+\frac an} -\log \frac{p + \frac bn}{q + \frac an} - \log\frac{x}{1-x} + \log\frac pq + O(n^{-2})
+                  \\ &= O(n^{-1})(x-p) + O(n^{-1})(x-p)^2 + O((x-p)^3)+O(n^{-2}).
+              \end{align*}
+              Note the CLT implies that $\sqrt n (\bar Y_n - p)$ has $\mathcal N(0,pq)$ as the asymptotic distribution, which implies $\bar Y_n - p = O_p(n^{-1/2})$. Thus,
+              \begin{align*}
+                   & \tilde g(\bar Y_n) - g(\bar Y_n)
+                  \\ &= O(n^{-1})O_p(n^{-1/2}) + O(n^{-1})O_p(n^{-1}) + O_p(n^{-3/2})+O(n^{-2})
+                  \\ &= O_p(n^{-3/2}),
+              \end{align*}
+              which is $o_p(1/n)$. Now we have
+              \begin{align*}
+                  g(\bar Y_n) = \bracket{\log\frac pq + \paren{\frac bp - \frac aq}\frac 1n} & + \frac{\sigma}{\sqrt n} \paren{\frac 1p+ \frac 1q}Z_n
+                  \\&+ \frac{\sigma^2}{2n} \paren{-\frac 1{p^2} + \frac1{q^2}}Z_n^2 + o_p(1),
+              \end{align*}
+              where $\sigma^2 = pq$ and $Z_n = \sqrt n(\bar Y_n - p) / \sigma$.
+              Thus, using $\tilde g(\frac 1n X_n)-g(\frac 1n X_n) \eqdist \tilde g(\bar Y_n)-g(\bar Y_n) = o_p(1)$,
+              \begin{align*}
+                  \log \frac{X_n + b}{n-X_n + a} & = \bracket{\log\frac pq + \paren{\frac bp - \frac aq}\frac 1n}
+                  \\&+ \frac{\sigma}{\sqrt n} \paren{\frac 1p+ \frac 1q}\tilde Z_n + \frac{\sigma^2}{2n} \paren{-\frac 1{p^2} + \frac1{q^2}}\tilde Z_n^2 + o_p(1)
+              \end{align*}
+              where $\sigma^2 = pq$ and $\tilde Z_n \coloneqq \sqrt n(\frac 1n X_n - p)/\sigma$. Hence,
+              \begin{align*}
+                  W_n & = \bracket{\log\frac pq + \paren{\frac bp - \frac aq}\frac 1n} +\frac{\sigma}{\sqrt n} \paren{\frac 1p+ \frac 1q}\tilde Z_n + \frac{\sigma^2}{2n} \paren{-\frac 1{p^2} + \frac1{q^2}}\tilde Z_n^2
+                  \\ &=  \bracket{\log\frac pq + \paren{\frac bp - \frac aq}\frac 1n}
+                  \\ &\qquad\qquad+ \paren{\frac 1p+ \frac 1q} \paren{\frac 1n X_n - p} + \frac 12 \paren{-\frac 1{p^2} + \frac1{q^2}}\paren{\frac 1n X_n - p}^2
+              \end{align*} could be an answer.
+        \item Using the limit theorem (7--i) in the lecture note to $g(\bar Y_n)\eqdist g(\frac 1n X_n) = W_n + o_p(n^{-1})$,
+              \begin{align*}
+                  \E W_n   & = g(p) + \frac{\sigma^2}{2n}g''(p)
+                  \\ &= \log\frac pq + \paren{\frac bp - \frac aq}\frac 1n + \frac {pq}{2n} \paren{-\frac 1{p^2} + \frac1{q^2}}
+                  \\ &= \log\frac pq + \paren{\frac {b-\frac 12}p + \frac {\frac 12 - a}q}\frac 1n, \\
+                  \Var W_n & = \frac 1n(g'(p))^2 \sigma^2 + o_p(n^{-1}) \\ &=  \frac{pq}{n} \paren{\frac 1p+\frac 1q}^2 + o_p(n^{-1})
+                  \\ &= \frac{pq}{n} \paren{\frac{p+q}{pq}}^2 + o_p(n^{-1})
+                  \\ &= \frac 1n \cdot \frac 1{pq}+ o_p(n^{-1}). \tag{$\because p+q=1$}
+              \end{align*}
+    \end{enumerate}
+}
+
+\solution{
+As in the lecture material, with the initial unbiased estimator $T_0 = \mathbf 1_{(X_1\le u)}$, the Rao--Blackwellization of $T_0$ given the CSS $(\bar X, \sum_i (X_i - \bar X)^2)'$ is:
+\begin{align*}
+     & T_1\paren[\Big]{\bar x, \sum_i (x_i-\bar x)^2}
+    \\ &= \P[\Big]{X_1 \le u \,\Big|\, \bar X = \bar x, \sum (X_i-\bar X)^2 = \sum (x_i - \bar x)^2}
+    \\ &= \P{\frac{X_1 - \bar X}{\sqrt{\sum (X_i - \bar X)^2}} \le \frac{u - \bar x}{\sqrt{\sum (x_i - \bar x)^2}} \,\bigg|\, \bar X = \bar x, \sum (X_i-\bar X)^2 = \sum (x_i - \bar x)^2}
+    \\ &= \P{\frac{X_1 - \bar X}{\sqrt{\sum (X_i - \bar X)^2}} \le \frac{u - \bar x}{\sqrt{\sum (x_i - \bar x)^2}}}. \tag{Basu's theorem}
+\end{align*}
+First of all, since ${(X_1 - \bar X)}{\paren{\sum (X_i - \bar X)^2}^{-1/2}}$ does not depend on the values of $\mu$ and $\sigma^2$, without loss of generality, we may assume $\mu=0$ and $\sigma^2 = 1$. Here, $X_1 - \bar X$ follows a normal distribution, where the mean is $\E(X_1 - \bar X) = 0$ and the variance is
+\begin{align*}
+    \Var (X_1 - \bar X) & = \Var \paren[\bigg]{ \frac{n-1}n X_1 - \frac 1n \sum_{j=2}^n X_j }
+    \\ &= \paren{\frac{n-1}n}^2 + \sum_{j=2}^n \frac 1{n^2} = \frac{n-1}n.
+\end{align*}
+Therefore, $\sqrt{n\over n-1} (X_1-\bar X)\sim \mathcal N(0,1)$, and hence $\Xi_1\coloneqq \frac{n}{n-1} (X_1 - \bar X)^2 \sim \chi^2_1$. Since
+\begin{align*}
+    \Xi_1 + \Xi_2\coloneqq \sum_{j=1}^n (X_j - \bar X)^2 \sim \chi^2_{n-1},
+\end{align*}
+we have
+\begin{align*}
+    \frac{\frac{n}{n-1} (X_1 - \bar X)^2}{\sum_{j=1}^n (X_j - \bar X)^2} = \frac{\Xi_1}{\Xi_1+\Xi_2} \sim \text{Beta}\paren{ \frac 12, \frac {n-2}2 }
+\end{align*}
+since $\Xi_2 = -\frac{1}{n-1}(X_1-\bar X)^2 + \sum_{j=2}^n (X_j-\bar X)^2 \sim \chi^2_{n-2}$.
+
+Note that $-X_1,\dots,-X_n$ has the same property as $X_1,\dots,X_n$, yielding
+\begin{align*}
+    \frac{X_1 - \bar X}{\sqrt{\sum (X_i - \bar X)^2}} \eqdist \frac{(-X_1) - (-\bar X)}{\sqrt{\sum ((-X_i) - (-\bar X))^2}} = -\frac{X_1 - \bar X}{\sqrt{\sum (X_i - \bar X)^2}}.
+\end{align*}
+Hence,
+\begin{align*}
+     & \P{\paren{\frac{X_1 - \bar X}{\sqrt{\sum (X_i - \bar X)^2}}}^2 > \paren{\frac{u - \bar x}{\sqrt{\sum (x_i - \bar x)^2}}}^2}
+    \\ &= \P{ \frac{X_1 - \bar X}{\sqrt{\sum (X_i - \bar X)^2}} > \frac{|u - \bar x|}{\sqrt{\sum (x_i - \bar x)^2} }} + \P{ \frac{X_1 - \bar X}{\sqrt{\sum (X_i - \bar X)^2}} < -\frac{|u - \bar x|}{\sqrt{\sum (x_i - \bar x)^2} }}
+    \\ &= \P{ \frac{X_1 - \bar X}{\sqrt{\sum (X_i - \bar X)^2}} > \frac{|u - \bar x|}{\sqrt{\sum (x_i - \bar x)^2} }} + \P{ -\frac{X_1 - \bar X}{\sqrt{\sum (X_i - \bar X)^2}} > \frac{|u - \bar x|}{\sqrt{\sum (x_i - \bar x)^2} }}
+    \\ &= 2\P{ \frac{X_1 - \bar X}{\sqrt{\sum (X_i - \bar X)^2}} > \frac{|u - \bar x|}{\sqrt{\sum (x_i - \bar x)^2} }}
+    \\ &= 2\P{ \frac{X_1 - \bar X}{\sqrt{\sum (X_i - \bar X)^2}} < -\frac{|u - \bar x|}{\sqrt{\sum (x_i - \bar x)^2} }}.
+\end{align*}
+The probability in the first line of the equation above can be evaluated as follows:
+\begin{align*}
+     & \P{\paren{\frac{X_1 - \bar X}{\sqrt{\sum (X_i - \bar X)^2}}}^2 > \paren{\frac{u - \bar x}{\sqrt{\sum (x_i - \bar x)^2}}}^2}
+    \\ &\qquad = \P{{\frac{\frac n {n-1}(X_1 - \bar X)^2}{{\sum (X_i - \bar X)^2}}}> {\frac{\frac n {n-1}(u - \bar x)^2}{{\sum (x_i - \bar x)^2}}}}
+    \\ &\qquad = 1 - \cdf_{\text{Beta}(\frac 1 2, \frac {n-2}2)}\paren{\frac{\frac n {n-1}(u - \bar x)^2}{{\sum (x_i - \bar x)^2}}},
+\end{align*}
+When $u\ge \bar x$, we have
+\begin{align*}
+     & \P{ \frac{X_1 - \bar X}{\sqrt{\sum (X_i - \bar X)^2}} \le \frac{u - \bar x}{\sqrt{\sum (x_i - \bar x)^2} }}
+    \\ &= 1 - \P{ \frac{X_1 - \bar X}{\sqrt{\sum (X_i - \bar X)^2}} > \frac{|u - \bar x|}{\sqrt{\sum (x_i - \bar x)^2} }}
+    \\ &= \frac 12 + \frac 12\, \cdf_{\text{Beta}(\frac 1 2, \frac {n-2}2)}\paren{\frac{\frac n {n-1}(u - \bar x)^2}{{\sum (x_i - \bar x)^2}}}.
+\end{align*}
+When $u\le \bar x$, we have
+\begin{align*}
+     & \P{ \frac{X_1 - \bar X}{\sqrt{\sum (X_i - \bar X)^2}} \le \frac{u - \bar x}{\sqrt{\sum (x_i - \bar x)^2} }}
+    \\ &= \P{ \frac{X_1 - \bar X}{\sqrt{\sum (X_i - \bar X)^2}} < -\frac{|u - \bar x|}{\sqrt{\sum (x_i - \bar x)^2} }}
+    \\ &= \frac 12 - \frac 12\, \cdf_{\text{Beta}(\frac 1 2, \frac {n-2}2)}\paren{\frac{\frac n {n-1}(u - \bar x)^2}{{\sum (x_i - \bar x)^2}}}.
+\end{align*}
+Therefore,
+\begin{align*}
+    T_1 & = \frac 12 + \frac 12\, \sgn(u-\bar X)\cdot \cdf_{\text{Beta}(\frac 1 2, \frac {n-2}2)}\paren{\frac{\frac n {n-1}(u - \bar X)^2}{{\sum (X_i - \bar X)^2}}}
+\end{align*}
+and $T_1$ is the unique UMVUE of $\P{X_1\le u}$ due to Lehmann--Scheff\'e theorem.
+}
+
+\solution[6.17] {
+    Note that
+    \begin{align*}
+        P_\theta(X_1=x_1,\dots,X_n=x_n) = \prod_{j=1}^n \theta(1-\theta)^{x_j-1} = \theta^n (1-\theta)^{\sum_j x_j - n}.
+    \end{align*}
+    Therefore, by the factorization theorem, $\sum X_i$ is sufficient for $\theta$.
+
+    $\sum X_i$ follows the following distribution:
+    $$\P{\sum_{i=1}^n X_i = k} = \binom{k-1}{k-n} \theta^n (1-\theta)^{k-n}\qquad (k=n,\,n+1,\,\cdots).$$
+    When $n=1$, the equation holds with $\P{X_1=k} = \theta(1-\theta)^{k-1}$. The induction step is proceeded as follows:
+    \begin{align*}
+        \P{\sum_{i=1}^n X_i = k} & = \sum_{r=1}^{k-n+1} \P{\sum_{i=1}^{n-1} X_i = k-r,\ X_n = r}
+        \\ &= \sum_{r=1}^{k-n+1}  \binom{k-r-1}{k-r-n+1} \theta^{n-1} (1-\theta)^{k-r-n+1}\,\theta(1-\theta)^{r-1}
+        \\ &= \theta^{n} (1-\theta)^{k-n}\sum_{r=1}^{k-n+1}  \binom{k-r-1}{k-r-n+1}
+        \\ &= \theta^{n} (1-\theta)^{k-n}\binom{k-1}{k-n}.
+    \end{align*}
+
+    Now, denote $T= \sum_{i=1}^n X_i$. Assume for any $0<\theta<1$,
+    \begin{align*}
+        \E_\theta \bracket{ g(T) } & = \sum_{k=n}^\infty g(k)\binom{k-1}{k-n} \theta^n (1-\theta)^{k-n}=0.
+    \end{align*}
+    This implies $g(k)\binom{k-1}{k-n} (1-\theta)^{k}=0$ for any $k\ge n$, i.e., $g(k)=0$ for any $k\ge n$. Thus, $T=\sum X_i$ is complete.
+}
+
+\solution[6.30] {
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\alph*)}, topsep=0pt]
+        \item The sufficiency is proven using the factorization theorem:
+              \begin{align*}
+                  f(x_1,\dots,x_n|\mu) = \prod_{j=1}^n e^{-(x_j-\mu)}\mathbf 1_{(\mu < x_j)} = e^{n\mu} \mathbf 1_{(\mu < x_{(1)})}\cdot \exp\paren[\Big]{-\sum_{j=1}^n x_j}
+              \end{align*}
+              where $x_{(1)}=\min_{1\le j\le n} x_j$.
+
+              To see the completeness, assume for any $\mu$,
+              \begin{align*}
+                  \E g(X_{(1)}|\mu) & = \int_{\mu}^\infty g(x)\,n e^{-n(x-\mu)}\,dx = 0.
+              \end{align*}
+              Then we have $g(x)\,n e^{-n(x-\mu)}=0$ a.e., that is, $g(x) = 0$ a.e. Thus $g(X_{(1)})=0$ a.s., for any $\mu$. This shows the completeness.
+        \item Since the common distribution of $X_i$'s is in a location parameter family, $S^2$ is an ancillary statistic, as $X_j-\bar X = (X_j+a)-(\bar X+a)$ is independent of $\mu$. Therefore, since $X_{(1)}$ is a CSS and $S^2$ is ancillary, they are independent due to Basu's theorem.
+    \end{enumerate}
+}
+
+\solution[7.37] {
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\alph*)}, topsep=0pt]
+        \item \begin{align*}
+                  d_{\mathrm P}^r(cx_1,\dots,cx_n) & = \frac{\int_0^\infty t^{n+r-1} \prod_{i=1}^n f(tcx_i)\,dt}{\int_0^\infty t^{n+2r-1} \prod_{i=1}^n f(tcx_i)\,dt}
+                  \\ &= c^r\,\frac{\int_0^\infty (ct)^{n+r-1} \prod_{i=1}^n f(ct\cdot x_i)\,c\,dt}{\int_0^\infty (ct)^{n+2r-1} \prod_{i=1}^n f(ct\cdot x_i)\,c\,dt}
+                  \\ &= c^r\,\frac{\int_0^\infty t^{n+r-1} \prod_{i=1}^n f(tx_i)\,dt}{\int_0^\infty t^{n+2r-1} \prod_{i=1}^n f(t x_i)\,dt}
+                  \\ &= c^r d_{\mathrm P}^r(x_1,\dots,x_n).
+              \end{align*}
+        \item In this case, $f(x) = \frac{1}{\sqrt{2\pi}}\exp(-x^2)$ with $r=2$. Since $\int_0^\infty t^{z-1} e^{-st}\,dt = s^{-z}\Gamma(z)$, we have
+              \begin{align*}
+                  d_{\mathrm P}^2 (x_1,\dots,x_n) & = \frac{\int_0^\infty t^{n+1} (2\pi)^{-n/2} \exp\paren[\big]{-t^2 \sum_{i=1}^n x_i^2}\,dt }{\int_0^\infty t^{n+3} (2\pi)^{-n/2} \exp\paren[\big]{-t^2 \sum_{i=1}^n x_i^2}\,dt}
+                  \\ &= \frac{\int_0^\infty t^{n+1} \exp\paren[\big]{-t^2 \sum_{i=1}^n x_i^2}\,dt }{\int_0^\infty t^{n+3} \exp\paren[\big]{-t^2 \sum_{i=1}^n x_i^2}\,dt}
+                  \\ &= \frac{\int_0^\infty u^{n/2} \exp\paren[\big]{-u \sum_{i=1}^n x_i^2}\,du }{\int_0^\infty u^{(n/2)+1} \exp\paren[\big]{-u \sum_{i=1}^n x_i^2}\,du}
+                  \\ &= \frac{ (\sum_{i=1}^n x_i^2)^{-(n/2)-1} \Gamma((n/2)+1) }{ (\sum_{i=1}^n x_i^2)^{-(n/2)-2} \Gamma((n/2)+2) }
+                  \\ &= \frac{ \sum_{i=1}^n x_i^2 }{ (n/2) + 1 } = \frac{2}{n+2} \sum_{i=1}^n x_i^2.
+              \end{align*}
+
+        \item In this case, $f(x) = \exp(-x)$ with $\sigma = \beta$ and $r=1$.
+              \begin{align*}
+                  d_{\mathrm P}^1 (x_1,\dots,x_n) & = \frac{\int_0^\infty t^{n} \prod_{i=1}^n \exp(-tx_i)\,dt }{\int_0^\infty t^{n+1} \prod_{i=1}^n \exp(-tx_i)\,dt }
+                  \\ &= \frac{\int_0^\infty t^{n} \exp(-t\sum x_i)\,dt }{\int_0^\infty t^{n+1} \exp(-t\sum x_i)\,dt }
+                  \\ &= \frac{ (\sum x_i)^{-n-1} \Gamma(n+1) }{ (\sum x_i)^{-n-2} \Gamma(n+2) } \\&= \frac{1}{n+1}\sum_i x_i.
+              \end{align*}
+        \item In this case, $f(x) = \mathbf 1_{(0<x<1)}$ with $\sigma = \theta$ and $r=1$.
+              \begin{align*}
+                  d_{\mathrm P}^1 (x_1,\dots,x_n) & = \frac{\int_0^\infty t^{n} \prod_{i=1}^n \mathbf 1_{(0<tx_i<1)}\,dt }{\int_0^\infty t^{n+1} \prod_{i=1}^n \mathbf 1_{(0<tx_i<1)}\,dt }
+                  \\ &= \frac{ \int_0^{1/\max_i x_i} t^n\,dt }{ \int_0^{1/\max_i x_i} t^{n+1}\,dt }
+                  \\ &= \frac{n+2}{n+1}\max_i x_i.
+              \end{align*}
+    \end{enumerate}
+}
+
+\solution[7.50] {
+    \vspace*{-2em}
+    \begin{enumerate}[label={(\alph*)}, topsep=0pt]
+        \item $\E[a\bar X + (1-a)cS] = a\E\bar X + (1-a)\E(cS) = a\theta + (1-a)\theta = \theta$.
+        \item Note that the sample mean $\bar X$ and the sample variance $S^2$ are independent provided the normality of the distribution. Thus, so are $\bar X$ and $S$. Thus,
+        \begin{align*}
+            \Var(a\bar X + (1-a)cS) = a^2\Var (\bar X) + (1-a)^2c^2 \Var(S).
+        \end{align*}
+        Note that $(n-1)S^2/\theta^2 \sim \chi^2_{n-1}$, so that the mean of $\sqrt{(n-1)S^2/\theta^2}$ is as follows:
+        \begin{align*}
+            \E\bracket{ \sqrt{(n-1)S^2\over \theta^2 }} &= \int_0^\infty \sqrt x\, \frac{x^{(n-1)/2 - 1} e^{-x/2}}{2^{(n-1)/2}\Gamma((n-1)/2)}\,dx
+            \\ &= \int_0^\infty \frac{x^{n/2 - 1} e^{-x/2}}{2^{n/2}\Gamma(n/2)}\frac{2^{n/2}\Gamma(n/2)}{2^{(n-1)/2}\Gamma((n-1)/2)}\,dx 
+            \\ &= \sqrt 2 \frac{\Gamma(n/2)}{\Gamma((n-1)/2)}.
+        \end{align*}
+        Therefore, \begin{align*}
+            \Var[S] &= \E[S^2] - (\E S)^2
+            \\ &= \theta^2 - \paren{ \sqrt{2\over n-1}\, \theta \,\frac{\Gamma(n/2)}{\Gamma((n-1)/2)} }^2
+            \\ &= \theta^2 - \paren{ \theta/c }^2. \\
+            \therefore  \Var(a\bar X + (1-a)cS) &= a^2\,\frac{\theta^2}n + (1-a)^2 (c^2-1)\theta^2.
+        \end{align*}
+        At the value of $a$ minimizing the variance of $a\bar X + (1-a)cS$, we have $2a \,\frac{\theta^2}n - 2(1-a)(c^2-1)\theta^2 = 0$, i.e., 
+        \begin{align*}
+            a = \frac{c^2-1}{\frac 1n + c^2 - 1}.
+        \end{align*}
+        \item As the joint pdf of $X_i$'s is
+        \begin{align*}
+            f_\theta(x_1,\dots,x_n) &= (2\pi)^{-n/2} \theta^{-n }\exp\bracket{ -\frac 1{2\theta^2}\sum_i (x_i-\theta)^2 }
+            \\ &= (2\pi)^{-n/2} \theta^{-n} \exp\bracket{ -\frac{1}{2\theta^2}\sum x_i^2 + \frac 1\theta \sum x_i - \frac n 2 }
+            \\ &= (2\pi)^{-n/2} \theta^{-n} \exp\bracket{ -\frac{1}{2\theta^2}((n-1)s^2 + n\bar x^2) + \frac 1\theta n\bar x - \frac n 2 }
+        \end{align*}
+        where $\bar x = \sum x_i$ and $s^2 = (n-1)^{-1}\sum (x_i - \bar x)^2 = (n-1)^{-1} (\sum x_i^2 - n\bar x^2)$, $\bar X, S^2$ is sufficient for $\theta$. However, for
+        \begin{align*}
+            g(\bar x, s^2) = \frac 1 n\, s^2 - \frac{1}{n+1}(\bar x)^2\not\equiv 0\text{\quad(in an almost sure sense)},
+        \end{align*}
+        we have
+        \begin{align*}
+            \E_\theta [g(\bar X, S^2)] = \frac 1 n\,\E S^2 - \frac 1{n+1} \E(\bar X^2) = \frac 1 n \theta^2 - \frac 1{n+1} \paren{\frac{\theta^2}n + \theta^2} = 0.
+        \end{align*}
+        This proves that $(\bar X, S^2)$ is not a complete sufficient statistic for $\theta$.
+    \end{enumerate}
+}
+
+\end{document}
